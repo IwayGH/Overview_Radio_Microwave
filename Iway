@@ -1,0 +1,3748 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Microwave Radio Link Presentation</title>
+
+    <!-- Font Awesome for modern icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- Google Fonts for better typography -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- MathJax for mathematical equations -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    ></script>
+
+    <!-- External libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pptxgenjs/3.12.0/pptxgen.bundle.min.js"></script>
+
+    <style>
+      :root {
+        --primary-color: #1a73e8;
+        --secondary-color: #4dabf7;
+        --accent-color: #f44336;
+        --success-color: #4caf50;
+        --warning-color: #ff9800;
+        --dark-bg: #0a1929;
+        --darker-bg: #051120;
+        --light-text: #ffffff;
+        --medium-text: #d0e1ff;
+        --subtle-text: rgba(255, 255, 255, 0.7);
+        --card-bg: rgba(255, 255, 255, 0.1);
+        --border-color: rgba(255, 255, 255, 0.2);
+        --transition-speed: 0.3s;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Open Sans", sans-serif;
+        background: var(--dark-bg);
+        color: var(--light-text);
+        overflow: hidden;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: background-color var(--transition-speed) ease;
+      }
+
+      body.dark-mode {
+        --dark-bg: #0a1929;
+        --darker-bg: #051120;
+        --light-text: #ffffff;
+        --medium-text: #d0e1ff;
+        --subtle-text: rgba(255, 255, 255, 0.7);
+        --card-bg: rgba(255, 255, 255, 0.1);
+        --border-color: rgba(255, 255, 255, 0.2);
+      }
+
+      body.light-mode {
+        --dark-bg: #f5f7fa;
+        --darker-bg: #e9ecef;
+        --light-text: #202124;
+        --medium-text: #3c4043;
+        --subtle-text: rgba(0, 0, 0, 0.6);
+        --card-bg: rgba(255, 255, 255, 0.8);
+        --border-color: rgba(0, 0, 0, 0.1);
+      }
+
+      .presentation-container {
+        width: 90%;
+        max-width: 1200px;
+        height: 85vh;
+        position: relative;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        border-radius: 15px;
+        overflow: hidden;
+        background: var(--card-bg);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--border-color);
+        transition: all var(--transition-speed) ease;
+      }
+
+      .slide {
+        width: 100%;
+        height: 100%;
+        padding: 40px;
+        display: none;
+        flex-direction: column;
+        position: relative;
+        overflow-y: auto;
+        transition: all var(--transition-speed) ease;
+      }
+
+      .slide::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          rgba(10, 25, 41, 0.95),
+          rgba(15, 40, 80, 0.95)
+        );
+        z-index: 1;
+        transition: all var(--transition-speed) ease;
+      }
+
+      body.light-mode .slide::before {
+        background: linear-gradient(
+          135deg,
+          rgba(245, 247, 250, 0.95),
+          rgba(233, 236, 239, 0.95)
+        );
+      }
+
+      .slide-content {
+        position: relative;
+        z-index: 2;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .slide.active {
+        display: flex;
+        animation: fadeIn 0.5s ease-in-out;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .slide-header {
+        text-align: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid var(--border-color);
+        position: relative;
+        z-index: 2;
+      }
+
+      .slide-title {
+        font-family: "Montserrat", sans-serif;
+        font-size: 2.8rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: var(--light-text);
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        transition: color var(--transition-speed) ease;
+      }
+
+      .slide-subtitle {
+        font-size: 1.8rem;
+        font-weight: 400;
+        color: var(--medium-text);
+        margin-bottom: 5px;
+        transition: color var(--transition-speed) ease;
+      }
+
+      .bilingual {
+        display: flex;
+        gap: 30px;
+        margin-bottom: 20px;
+      }
+
+      .column {
+        flex: 1;
+        padding: 20px;
+        background: var(--card-bg);
+        border-radius: 10px;
+        border-left: 4px solid var(--secondary-color);
+        backdrop-filter: blur(5px);
+        transition: all var(--transition-speed) ease;
+      }
+
+      .column:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      }
+
+      .column h3 {
+        font-family: "Montserrat", sans-serif;
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+        color: var(--secondary-color);
+        transition: color var(--transition-speed) ease;
+      }
+
+      .column p,
+      .column li {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 10px;
+        transition: color var(--transition-speed) ease;
+      }
+
+      .column ul {
+        padding-left: 20px;
+      }
+
+      .column li {
+        margin-bottom: 8px;
+      }
+
+      .slide-footer {
+        text-align: right;
+        font-size: 0.9rem;
+        color: var(--subtle-text);
+        padding-top: 15px;
+        border-top: 1px solid var(--border-color);
+        margin-top: 20px;
+        position: relative;
+        z-index: 2;
+        transition: color var(--transition-speed) ease;
+      }
+
+      .navigation {
+        position: absolute;
+        bottom: 20px;
+        left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        z-index: 3;
+      }
+
+      .nav-btn {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        color: var(--light-text);
+        padding: 10px 20px;
+        border-radius: 30px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: all var(--transition-speed) ease;
+        backdrop-filter: blur(5px);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .nav-btn:hover {
+        background: var(--primary-color);
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .slide-indicator {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: var(--card-bg);
+        color: var(--light-text);
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        z-index: 3;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border: 1px solid var(--border-color);
+        transition: all var(--transition-speed) ease;
+      }
+
+      .lang-toggle {
+        background: var(--primary-color);
+        border: none;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 15px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        transition: all var(--transition-speed) ease;
+      }
+
+      .lang-toggle:hover {
+        background: var(--secondary-color);
+      }
+
+      .theme-toggle {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        color: var(--light-text);
+        padding: 5px 10px;
+        border-radius: 15px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        transition: all var(--transition-speed) ease;
+        margin-left: 10px;
+      }
+
+      .theme-toggle:hover {
+        background: var(--primary-color);
+      }
+
+      .cover-content {
+        text-align: center;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        z-index: 2;
+      }
+
+      .cover-title {
+        font-family: "Montserrat", sans-serif;
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: var(--light-text);
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        transition: color var(--transition-speed) ease;
+      }
+
+      .cover-subtitle {
+        font-size: 2rem;
+        font-weight: 400;
+        color: var(--medium-text);
+        margin-bottom: 40px;
+        transition: color var(--transition-speed) ease;
+      }
+
+      .presenter-info {
+        margin-top: 60px;
+        font-size: 1.3rem;
+      }
+
+      .presenter-name {
+        font-weight: 600;
+        margin-bottom: 5px;
+      }
+
+      .presenter-title {
+        font-weight: 400;
+        color: var(--medium-text);
+        transition: color var(--transition-speed) ease;
+      }
+
+      .case-description {
+        background: var(--card-bg);
+        padding: 20px;
+        border-radius: 10px;
+        backdrop-filter: blur(5px);
+        margin-bottom: 20px;
+        transition: all var(--transition-speed) ease;
+      }
+
+      .solution-steps {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+      }
+
+      .step {
+        background: var(--card-bg);
+        padding: 15px;
+        border-radius: 10px;
+        border-left: 4px solid var(--secondary-color);
+        backdrop-filter: blur(5px);
+        transition: all var(--transition-speed) ease;
+      }
+
+      .step:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      }
+
+      .step h4 {
+        color: var(--secondary-color);
+        margin-bottom: 10px;
+        font-size: 1.2rem;
+        transition: color var(--transition-speed) ease;
+      }
+
+      .references {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+      }
+
+      .reference-item {
+        background: var(--card-bg);
+        padding: 15px;
+        border-radius: 10px;
+        backdrop-filter: blur(5px);
+        transition: all var(--transition-speed) ease;
+      }
+
+      .reference-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Login Modal */
+      .login-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        backdrop-filter: blur(5px);
+      }
+
+      .login-modal.active {
+        display: flex;
+        animation: fadeIn 0.3s ease-in-out;
+      }
+
+      .login-form {
+        background: linear-gradient(135deg, var(--dark-bg), var(--darker-bg));
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        width: 90%;
+        max-width: 400px;
+        text-align: center;
+        border: 1px solid var(--border-color);
+        transition: all var(--transition-speed) ease;
+      }
+
+      body.light-mode .login-form {
+        background: linear-gradient(135deg, #ffffff, #f5f7fa);
+      }
+
+      .login-form h2 {
+        margin-bottom: 30px;
+        color: var(--light-text);
+        font-size: 2rem;
+        font-family: "Montserrat", sans-serif;
+        transition: color var(--transition-speed) ease;
+      }
+
+      .login-form input {
+        width: 100%;
+        padding: 15px;
+        margin-bottom: 20px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        background: var(--card-bg);
+        color: var(--light-text);
+        font-size: 1rem;
+        backdrop-filter: blur(5px);
+        transition: all var(--transition-speed) ease;
+      }
+
+      .login-form input::placeholder {
+        color: var(--subtle-text);
+      }
+
+      .login-form input:focus {
+        outline: none;
+        background: var(--card-bg);
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+      }
+
+      .login-btn {
+        width: 100%;
+        padding: 15px;
+        border: none;
+        border-radius: 8px;
+        background: var(--primary-color);
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all var(--transition-speed) ease;
+        font-family: "Montserrat", sans-serif;
+      }
+
+      .login-btn:hover {
+        background: var(--secondary-color);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .cancel-btn {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        background: transparent;
+        color: var(--light-text);
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all var(--transition-speed) ease;
+        margin-top: 10px;
+      }
+
+      .cancel-btn:hover {
+        background: var(--card-bg);
+      }
+
+      .error-message {
+        color: var(--accent-color);
+        margin-bottom: 15px;
+        font-size: 0.9rem;
+        transition: color var(--transition-speed) ease;
+      }
+
+      /* Export Modal */
+      .export-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        backdrop-filter: blur(5px);
+      }
+
+      .export-modal.active {
+        display: flex;
+        animation: fadeIn 0.3s ease-in-out;
+      }
+
+      .export-form {
+        background: linear-gradient(135deg, var(--dark-bg), var(--darker-bg));
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        width: 90%;
+        max-width: 450px;
+        text-align: center;
+        border: 1px solid var(--border-color);
+        transition: all var(--transition-speed) ease;
+      }
+
+      body.light-mode .export-form {
+        background: linear-gradient(135deg, #ffffff, #f5f7fa);
+      }
+
+      .export-form h2 {
+        margin-bottom: 30px;
+        color: var(--light-text);
+        font-size: 2rem;
+        font-family: "Montserrat", sans-serif;
+        transition: color var(--transition-speed) ease;
+      }
+
+      .export-options {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .export-btn {
+        width: 100%;
+        padding: 15px;
+        border: none;
+        border-radius: 8px;
+        background: var(--primary-color);
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all var(--transition-speed) ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        font-family: "Montserrat", sans-serif;
+      }
+
+      .export-btn:hover {
+        background: var(--secondary-color);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .export-btn.pdf {
+        background: var(--accent-color);
+      }
+
+      .export-btn.pdf:hover {
+        background: #d32f2f;
+      }
+
+      .language-selector {
+        margin: 20px 0;
+        text-align: left;
+      }
+
+      .language-selector label {
+        display: block;
+        margin-bottom: 10px;
+        color: var(--light-text);
+        font-weight: 500;
+        text-align: left;
+      }
+
+      .language-options {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+      }
+
+      .language-option {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        background: var(--card-bg);
+        color: var(--light-text);
+        cursor: pointer;
+        transition: all var(--transition-speed) ease;
+        text-align: center;
+      }
+
+      .language-option:hover {
+        background: var(--primary-color);
+      }
+
+      .language-option.selected {
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+      }
+
+      .export-cancel-btn {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        background: transparent;
+        color: var(--light-text);
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all var(--transition-speed) ease;
+        margin-top: 10px;
+      }
+
+      .export-cancel-btn:hover {
+        background: var(--card-bg);
+      }
+
+      /* Progress indicator */
+      .progress-container {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.8);
+        padding: 20px 40px;
+        border-radius: 10px;
+        z-index: 2000;
+        display: none;
+        backdrop-filter: blur(5px);
+        border: 1px solid var(--border-color);
+      }
+
+      .progress-container.active {
+        display: block;
+        animation: fadeIn 0.3s ease-in-out;
+      }
+
+      .progress-text {
+        color: var(--light-text);
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+        transition: color var(--transition-speed) ease;
+      }
+
+      .progress-bar {
+        width: 200px;
+        height: 10px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 5px;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: var(--primary-color);
+        width: 0%;
+        transition: width 0.3s ease;
+      }
+
+      /* Edit Mode Styles */
+      .edit-controls {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        z-index: 10;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .edit-btn {
+        background: var(--success-color);
+        border: none;
+        color: white;
+        padding: 8px 15px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: all var(--transition-speed) ease;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-family: "Montserrat", sans-serif;
+      }
+
+      .edit-btn:hover {
+        background: #388e3c;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .save-btn {
+        background: var(--primary-color);
+      }
+
+      .save-btn:hover {
+        background: #1557b0;
+      }
+
+      .add-image-btn {
+        background: var(--warning-color);
+      }
+
+      .add-image-btn:hover {
+        background: #e68900;
+      }
+
+      .exit-btn {
+        background: var(--accent-color);
+      }
+
+      .exit-btn:hover {
+        background: #d32f2f;
+      }
+
+      .logout-btn {
+        background: #9c27b0;
+      }
+
+      .logout-btn:hover {
+        background: #7b1fa2;
+      }
+
+      .export-main-btn {
+        background: #ffc107;
+        color: #000;
+      }
+
+      .export-main-btn:hover {
+        background: #ffb300;
+      }
+
+      .editable {
+        outline: none;
+        transition: all var(--transition-speed) ease;
+        border-radius: 5px;
+        padding: 2px 5px;
+      }
+
+      .editable:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .editable:focus {
+        background: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+      }
+
+      /* Draggable and Resizable Image */
+      .slide-image {
+        position: absolute;
+        cursor: move;
+        z-index: 5;
+        border: 2px solid transparent;
+        transition: border-color var(--transition-speed) ease;
+        max-width: 90%;
+        max-height: 70%;
+      }
+
+      .slide-image:hover {
+        border-color: rgba(255, 255, 255, 0.5);
+      }
+
+      .slide-image.editing {
+        border-color: var(--secondary-color);
+      }
+
+      .resize-handle {
+        position: absolute;
+        width: 15px;
+        height: 15px;
+        background: var(--secondary-color);
+        border: 2px solid white;
+        border-radius: 50%;
+        cursor: nwse-resize;
+        bottom: -7px;
+        right: -7px;
+        display: none;
+      }
+
+      .slide-image.editing .resize-handle {
+        display: block;
+      }
+
+      .delete-btn {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        width: 25px;
+        height: 25px;
+        background: var(--accent-color);
+        border: 2px solid white;
+        border-radius: 50%;
+        color: white;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        display: none;
+      }
+
+      .slide-image.editing .delete-btn {
+        display: flex;
+      }
+
+      /* Language visibility */
+      .lang-en .id-content {
+        display: none;
+      }
+
+      .lang-id .en-content {
+        display: none;
+      }
+
+      /* Table styling */
+      .param-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "Open Sans", sans-serif;
+        font-size: 15px;
+        margin: 25px auto;
+        color: var(--light-text);
+        background: transparent;
+        border-spacing: 0;
+      }
+
+      .param-table thead tr {
+        border-bottom: 2px solid var(--border-color);
+      }
+
+      .param-table th {
+        text-align: left;
+        font-size: 15px;
+        font-weight: 600;
+        padding: 8px 14px;
+        color: var(--light-text);
+        font-family: "Montserrat", sans-serif;
+      }
+
+      .param-table td {
+        padding: 6px 14px;
+        border-bottom: 1px solid var(--border-color);
+        vertical-align: top;
+      }
+
+      .param-table td:first-child {
+        width: 25%;
+        font-weight: 600;
+        color: var(--light-text);
+        letter-spacing: 0.3px;
+      }
+
+      .param-table td:last-child {
+        width: 75%;
+        color: var(--medium-text);
+        line-height: 1.4em;
+      }
+
+      .param-table tr:hover td {
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      /* MathJax styling */
+      .MathJax {
+        color: var(--light-text) !important;
+        font-size: 1.1rem !important;
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        .bilingual {
+          flex-direction: column;
+        }
+
+        .solution-steps,
+        .references {
+          grid-template-columns: 1fr;
+        }
+
+        .cover-title {
+          font-size: 2.5rem;
+        }
+
+        .cover-subtitle {
+          font-size: 1.5rem;
+        }
+
+        .edit-controls {
+          flex-direction: column;
+          gap: 5px;
+        }
+
+        .edit-btn {
+          font-size: 0.8rem;
+          padding: 6px 12px;
+        }
+
+        .slide-title {
+          font-size: 2.2rem;
+        }
+
+        .slide-subtitle {
+          font-size: 1.5rem;
+        }
+      }
+
+      /* Toast notification */
+      .toast {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--darker-bg);
+        color: var(--light-text);
+        padding: 15px 25px;
+        border-radius: 50px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+        opacity: 0;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        border: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-10px);
+      }
+
+      .toast.success {
+        border-left: 4px solid var(--success-color);
+      }
+
+      .toast.error {
+        border-left: 4px solid var(--accent-color);
+      }
+
+      .toast.info {
+        border-left: 4px solid var(--primary-color);
+      }
+    </style>
+  </head>
+  <body class="lang-en dark-mode">
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+      <i class="fas fa-info-circle"></i>
+      <span id="toast-message">Notification</span>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="login-modal" id="loginModal">
+      <div class="login-form">
+        <h2><i class="fas fa-lock"></i> Editor Access</h2>
+        <div class="error-message" id="errorMessage"></div>
+        <input
+          type="password"
+          id="passwordInput"
+          placeholder="Enter password"
+          autocomplete="off"
+        />
+        <button class="login-btn" onclick="login()">
+          <i class="fas fa-sign-in-alt"></i> Login
+        </button>
+        <button class="cancel-btn" onclick="closeLoginModal()">
+          <i class="fas fa-times"></i> Cancel
+        </button>
+      </div>
+    </div>
+
+    <!-- Export Modal -->
+    <div class="export-modal" id="exportModal">
+      <div class="export-form">
+        <h2><i class="fas fa-file-export"></i> Export Presentation</h2>
+
+        <div class="language-selector">
+          <label>Select Language:</label>
+          <div class="language-options">
+            <div
+              class="language-option selected"
+              id="lang-en-option"
+              onclick="selectExportLanguage('en')"
+            >
+              <i class="fas fa-flag-usa"></i> English
+            </div>
+            <div
+              class="language-option"
+              id="lang-id-option"
+              onclick="selectExportLanguage('id')"
+            >
+              <i class="fas fa-flag"></i> Indonesia
+            </div>
+          </div>
+        </div>
+
+        <div class="export-options">
+          <button class="export-btn" onclick="exportToPPT()">
+            <i class="fas fa-file-powerpoint"></i> Export as PowerPoint (PPT)
+          </button>
+          <button class="export-btn pdf" onclick="exportToPDF()">
+            <i class="fas fa-file-pdf"></i> Export as PDF
+          </button>
+        </div>
+        <button class="export-cancel-btn" onclick="closeExportModal()">
+          <i class="fas fa-times"></i> Cancel
+        </button>
+      </div>
+    </div>
+
+    <!-- Progress Indicator -->
+    <div class="progress-container" id="progressContainer">
+      <div class="progress-text" id="progressText">Preparing export...</div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </div>
+
+    <div class="presentation-container">
+      <!-- Edit Controls -->
+      <div class="edit-controls" id="editControls">
+        <button class="edit-btn" id="editToggleBtn" onclick="showLoginModal()">
+          <i class="fas fa-edit"></i> Edit Mode
+        </button>
+        <button
+          class="edit-btn save-btn"
+          id="saveBtn"
+          onclick="saveChanges()"
+          style="display: none"
+        >
+          <i class="fas fa-save"></i> Save Changes
+        </button>
+        <button
+          class="edit-btn add-image-btn"
+          id="addImageBtn"
+          onclick="addImage()"
+          style="display: none"
+        >
+          <i class="fas fa-image"></i> Add Image
+        </button>
+        <button
+          class="edit-btn exit-btn"
+          id="exitBtn"
+          onclick="toggleEditMode()"
+          style="display: none"
+        >
+          <i class="fas fa-sign-out-alt"></i> Exit Edit
+        </button>
+        <button
+          class="edit-btn logout-btn"
+          id="logoutBtn"
+          onclick="logout()"
+          style="display: none"
+        >
+          <i class="fas fa-user-lock"></i> Logout
+        </button>
+        <button class="edit-btn export-main-btn" onclick="showExportModal()">
+          <i class="fas fa-file-export"></i> Export
+        </button>
+      </div>
+
+      <!-- Slide 1: Cover -->
+      <div class="slide active" id="slide1">
+        <div class="slide-indicator">
+          1 / 12
+          <button class="lang-toggle" onclick="toggleLanguage()">
+            <i class="fas fa-language"></i> ID
+          </button>
+          <button class="theme-toggle" onclick="toggleTheme()">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+        <div class="cover-content">
+          <div class="en-content">
+            <h1 class="cover-title editable" contenteditable="false">
+              Microwave Radio Link
+            </h1>
+            <h2 class="cover-subtitle editable" contenteditable="false">
+              Comprehensive Technical Overview, Case Studies, and Solutions
+            </h2>
+            <div class="presenter-info">
+              <div class="presenter-name editable" contenteditable="false">
+                Prepared by: Imam Wahyudi
+              </div>
+              <div class="presenter-title editable" contenteditable="false">
+                Senior Microwave Technical Support<br />
+                PT. Fiberhome Technologies Indonesia
+              </div>
+            </div>
+          </div>
+          <div class="id-content">
+            <h1 class="cover-title editable" contenteditable="false">
+              Radio Microwave Link
+            </h1>
+            <h2 class="cover-subtitle editable" contenteditable="false">
+              Tinjauan Teknis Komprehensif, Studi Kasus, dan Solusi
+            </h2>
+            <div class="presenter-info">
+              <div class="presenter-name editable" contenteditable="false">
+                Disiapkan oleh: Imam Wahyudi
+              </div>
+              <div class="presenter-title editable" contenteditable="false">
+                Senior Microwave Technical Support<br />
+                PT. Fiberhome Technologies Indonesia
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer editable" contenteditable="false">
+          Prepared by: Imam Wahyudi – Senior Microwave Technical Support
+        </div>
+      </div>
+
+      <!-- Slide 2: Overview -->
+      <div class="slide" id="slide2">
+        <div class="slide-indicator">
+          2 / 12
+          <button class="lang-toggle" onclick="toggleLanguage()">
+            <i class="fas fa-language"></i> ID
+          </button>
+          <button class="theme-toggle" onclick="toggleTheme()">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+        <div class="slide-header">
+          <div class="en-content">
+            <h2 class="slide-title editable" contenteditable="false">
+              Overview
+            </h2>
+          </div>
+          <div class="id-content">
+            <h2 class="slide-title editable" contenteditable="false">
+              Latar Belakang
+            </h2>
+          </div>
+        </div>
+        <div class="slide-content">
+          <div class="bilingual">
+            <div class="column en-content">
+              <h3 class="editable" contenteditable="false">Introduction</h3>
+              <p class="editable" contenteditable="false">
+                Microwave radio links are point-to-point communication systems
+                that use high-frequency radio waves (typically 6–80 GHz) to
+                transmit large amounts of data between two fixed sites. They
+                serve as critical components in telecommunications
+                infrastructure, especially in areas where fiber optic deployment
+                is impractical or cost-prohibitive.
+              </p>
+              <p class="editable" contenteditable="false">
+                Modern microwave systems offer capacities from several hundred
+                Mbps to multiple Gbps, with reliability exceeding 99.999%. They
+                are widely used for mobile backhaul, enterprise connectivity,
+                and critical infrastructure links.
+              </p>
+              <h3 class="editable" contenteditable="false">Key Principles</h3>
+              <p class="editable" contenteditable="false">
+                Microwave transmission relies on Line-of-Sight (LOS)
+                propagation, requiring clear paths between antennas. The
+                technology operates on the principle that radio waves travel in
+                straight lines and can be affected by atmospheric conditions,
+                terrain, and obstacles.
+              </p>
+              <p class="editable" contenteditable="false">
+                Key technical parameters include frequency bands, modulation
+                schemes, channel bandwidth, and transmit power. Modern systems
+                use advanced modulation (up to 4096-QAM) and adaptive coding to
+                maximize spectral efficiency.
+              </p>
+              <h3 class="editable" contenteditable="false">Applications</h3>
+              <ul>
+                <li class="editable" contenteditable="false">
+                  <strong>Mobile Backhaul:</strong> Connecting cell sites to
+                  core networks
+                </li>
+                <li class="editable" contenteditable="false">
+                  <strong>Enterprise Networks:</strong> High-speed connectivity
+                  between campuses
+                </li>
+                <li class="editable" contenteditable="false">
+                  <strong>Last-Mile Access:</strong> Providing broadband
+                  services in remote areas
+                </li>
+                <li class="editable" contenteditable="false">
+                  <strong>Backup Links:</strong> Redundant connections for
+                  critical infrastructure
+                </li>
+                <li class="editable" contenteditable="false">
+                  <strong>Temporary Deployments:</strong> Rapid deployment for
+                  events or disaster recovery
+                </li>
+              </ul>
+            </div>
+            <div class="column id-content">
+              <h3 class="editable" contenteditable="false">Pendahuluan</h3>
+              <p class="editable" contenteditable="false">
+                Radio microwave link adalah sistem komunikasi point-to-point
+                yang menggunakan gelombang radio berfrekuensi tinggi (biasanya
+                6–80 GHz) untuk mentransmisikan data dalam jumlah besar antara
+                dua lokasi tetap. Mereka berfungsi sebagai komponen kritis dalam
+                infrastruktur telekomunikasi, terutama di area di mana
+                pemasangan serat optik tidak praktis atau terlalu mahal.
+              </p>
+              <p class="editable" contenteditable="false">
+                Sistem microwave modern menawarkan kapasitas dari beberapa ratus
+                Mbps hingga beberapa Gbps, dengan keandalan melebihi 99,999%.
+                Mereka banyak digunakan untuk backhaul seluler, konektivitas
+                enterprise, dan link infrastruktur kritis.
+              </p>
+              <h3 class="editable" contenteditable="false">Prinsip Utama</h3>
+              <p class="editable" contenteditable="false">
+                Transmisi microwave bergantung pada propagasi Line-of-Sight
+                (LOS), yang memerlukan jalur yang jelas antara antena. Teknologi
+                ini beroperasi pada prinsip bahwa gelombang radio merambat dalam
+                garis lurus dan dapat dipengaruhi oleh kondisi atmosfer, medan,
+                dan rintangan.
+              </p>
+              <p class="editable" contenteditable="false">
+                Parameter teknis utama meliputi pita frekuensi, skema modulasi,
+                bandwidth kanal, dan daya transmisi. Sistem modern menggunakan
+                modulasi canggih (hingga 4096-QAM) dan pengkodean adaptif untuk
+                memaksimalkan efisiensi spektral.
+              </p>
+              <h3 class="editable" contenteditable="false">Aplikasi</h3>
+              <ul>
+                <li class="editable" contenteditable="false">
+                  <strong>Backhaul Seluler:</strong> Menghubungkan situs seluler
+                  ke jaringan inti
+                </li>
+                <li class="editable" contenteditable="false">
+                  <strong>Jaringan Enterprise:</strong> Konektivitas kecepatan
+                  tinggi antar kampus
+                </li>
+                <li class="editable" contenteditable="false">
+                  <strong>Akses Last-Mile:</strong> Menyediakan layanan
+                  broadband di area terpencil
+                </li>
+                <li class="editable" contenteditable="false">
+                  <strong>Link Cadangan:</strong> Koneksi redundan untuk
+                  infrastruktur kritis
+                </li>
+                <li class="editable" contenteditable="false">
+                  <strong>Penyebaran Sementara:</strong> Penyebaran cepat untuk
+                  acara atau pemulihan bencana
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer editable" contenteditable="false">
+          Prepared by: Imam Wahyudi – Senior Microwave Technical Support
+        </div>
+      </div>
+
+      <!-- Slide 3: Performance Parameters -->
+      <div class="slide" id="slide3">
+        <div class="slide-indicator">
+          3 / 12
+          <button class="lang-toggle" onclick="toggleLanguage()">
+            <i class="fas fa-language"></i> ID
+          </button>
+          <button class="theme-toggle" onclick="toggleTheme()">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+        <div class="slide-header">
+          <div class="en-content">
+            <h2 class="slide-title editable" contenteditable="false">
+              Performance Parameters
+            </h2>
+          </div>
+          <div class="id-content">
+            <h2 class="slide-title editable" contenteditable="false">
+              Parameter Performa
+            </h2>
+          </div>
+        </div>
+        <div class="slide-content">
+          <div class="bilingual">
+            <div class="column en-content">
+              <h3 class="editable" contenteditable="false">
+                Key Performance Indicators
+              </h3>
+              <p class="editable" contenteditable="false">
+                Monitoring microwave link performance requires tracking several
+                critical parameters to ensure optimal operation and service
+                quality. These indicators help engineers identify potential
+                issues before they impact service availability.
+              </p>
+              <table class="param-table">
+                <thead>
+                  <tr>
+                    <th>Parameter</th>
+                    <th>Description & Threshold</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>RSL</td>
+                    <td>
+                      Received Signal Level - indicates link strength. Normal
+                      range: -30 to -70 dBm
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>BER</td>
+                    <td>
+                      Bit Error Rate - measures transmission quality. Good:
+                      &lt;10⁻⁶, Acceptable: &lt;10⁻³
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>ES/SES</td>
+                    <td>
+                      Error Seconds / Severely Errored Seconds - measures error
+                      duration
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>UAS</td>
+                    <td>
+                      Unavailable Seconds - measures downtime. Target: &lt;28.8
+                      seconds/month
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Throughput</td>
+                    <td>Actual data rate achieved vs. configured capacity</td>
+                  </tr>
+                  <tr>
+                    <td>Availability</td>
+                    <td>Percentage of uptime. Standard: 99.999% (5 nines)</td>
+                  </tr>
+                </tbody>
+              </table>
+              <h3 class="editable" contenteditable="false">
+                Performance Standards
+              </h3>
+              <p class="editable" contenteditable="false">
+                ITU-T G.828 defines stringent requirements for international
+                connections, while ITU-T G.826 provides error performance
+                objectives. Carrier-grade networks typically require 99.999%
+                availability with latency &lt;5ms for critical applications.
+              </p>
+            </div>
+            <div class="column id-content">
+              <h3 class="editable" contenteditable="false">
+                Indikator Kinerja Utama
+              </h3>
+              <p class="editable" contenteditable="false">
+                Memantau performa link microwave memerlukan pelacakan beberapa
+                parameter kritis untuk memastikan operasi optimal dan kualitas
+                layanan. Indikator ini membantu engineer mengidentifikasi
+                masalah potensial sebelum memengaruhi ketersediaan layanan.
+              </p>
+              <table class="param-table">
+                <thead>
+                  <tr>
+                    <th>Parameter</th>
+                    <th>Deskripsi & Ambang Batas</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>RSL</td>
+                    <td>
+                      Level Sinyal Terima - menunjukkan kekuatan link. Rentang
+                      normal: -30 hingga -70 dBm
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>BER</td>
+                    <td>
+                      Rasio Kesalahan Bit - mengukur kualitas transmisi. Baik:
+                      &lt;10⁻⁶, Dapat diterima: &lt;10⁻³
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>ES/SES</td>
+                    <td>
+                      Detik Kesalahan / Detik Kesalahan Berat - mengukur durasi
+                      kesalahan
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>UAS</td>
+                    <td>
+                      Detik Tidak Tersedia - mengukur downtime. Target: &lt;28.8
+                      detik/bulan
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Throughput</td>
+                    <td>
+                      Laju data aktual yang dicapai vs kapasitas yang
+                      dikonfigurasi
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Availability</td>
+                    <td>
+                      Persentase waktu aktif. Standar: 99.999% (5 sembilan)
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <h3 class="editable" contenteditable="false">Standar Performa</h3>
+              <p class="editable" contenteditable="false">
+                ITU-T G.828 mendefinisikan persyaratan ketat untuk koneksi
+                internasional, sementara ITU-T G.826 menyediakan tujuan performa
+                kesalahan. Jaringan kelas carrier biasanya memerlukan
+                ketersediaan 99,999% dengan latensi &lt;5ms untuk aplikasi
+                kritis.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer editable" contenteditable="false">
+          Prepared by: Imam Wahyudi – Senior Microwave Technical Support
+        </div>
+      </div>
+
+      <!-- Slide 4: Link Budget Analysis
+      <div class="slide" id="slide4">
+        <div class="slide-indicator">
+          4 / 13
+          <button class="lang-toggle" onclick="toggleLanguage()">
+            <i class="fas fa-language"></i> ID
+          </button>
+          <button class="theme-toggle" onclick="toggleTheme()">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+        <div class="slide-header">
+          <div class="en-content">
+            <h2 class="slide-title editable" contenteditable="false">
+              Link Budget Analysis
+            </h2>
+          </div>
+          <div class="id-content">
+            <h2 class="slide-title editable" contenteditable="false">
+              Analisis Link Budget
+            </h2>
+          </div>
+        </div>
+        <div class="slide-content">
+          <div class="bilingual">
+            <div class="column en-content">
+              <h3 class="editable" contenteditable="false">
+                Link Budget Fundamentals
+              </h3>
+              <p class="editable" contenteditable="false">
+                Link budget analysis is crucial for designing reliable microwave
+                links. It calculates the expected received signal level and
+                ensures adequate fade margin for various atmospheric conditions.
+              </p>
+              <p class="editable" contenteditable="false">
+                <strong>Basic Equation:</strong><br />
+                Pr = Pt + Gt + Gr - (FSPL + Lloss)
+              </p>
+              <p class="editable" contenteditable="false">
+                Where:<br />
+                Pr = Received Power (dBm)<br />
+                Pt = Transmitted Power (dBm)<br />
+                Gt/Gr = Antenna Gains (dBi)<br />
+                FSPL = Free Space Path Loss (dB)<br />
+                Lloss = System Losses (dB)
+              </p>
+              <h3 class="editable" contenteditable="false">
+                Path Loss Calculation
+              </h3>
+              <p class="editable" contenteditable="false">
+                Free Space Path Loss (FSPL) is calculated as:<br />
+                FSPL = 92.4 + 20log10(f) + 20log10(d)<br />
+                Where f = frequency in GHz, d = distance in km
+              </p>
+              <p class="editable" contenteditable="false">
+                For example, a 15 GHz link over 20 km:<br />
+                FSPL = 92.4 + 20log10(15) + 20log10(20) = 142.4 dB
+              </p>
+              <h3 class="editable" contenteditable="false">Fade Margin</h3>
+              <p class="editable" contenteditable="false">
+                Fade margin is the additional signal strength above the receiver
+                threshold to account for atmospheric conditions. Typical
+                requirements:
+              </p>
+              <ul>
+                <li class="editable" contenteditable="false">
+                  Short links (&lt;10 km): 15-20 dB
+                </li>
+                <li class="editable" contenteditable="false">
+                  Medium links (10-30 km): 20-30 dB
+                </li>
+                <li class="editable" contenteditable="false">
+                  Long links (&gt;30 km): 30-40 dB
+                </li>
+              </ul>
+            </div>
+            <div class="column id-content">
+              <h3 class="editable" contenteditable="false">
+                Dasar Link Budget
+              </h3>
+              <p class="editable" contenteditable="false">
+                Analisis link budget sangat penting untuk merancang link
+                microwave yang andal. Ini menghitung level sinyal terima yang
+                diharapkan dan memastikan fade margin yang memadai untuk
+                berbagai kondisi atmosfer.
+              </p>
+              <p class="editable" contenteditable="false">
+                <strong>Persamaan Dasar:</strong><br />
+                Pr = Pt + Gt + Gr - (FSPL + Lloss)
+              </p>
+              <p class="editable" contenteditable="false">
+                Dimana:<br />
+                Pr = Daya Terima (dBm)<br />
+                Pt = Daya Transmisi (dBm)<br />
+                Gt/Gr = Gain Antena (dBi)<br />
+                FSPL = Path Loss Ruang Bebas (dB)<br />
+                Lloss = Losses Sistem (dB)
+              </p>
+              <h3 class="editable" contenteditable="false">
+                Perhitungan Path Loss
+              </h3>
+              <p class="editable" contenteditable="false">
+                Free Space Path Loss (FSPL) dihitung sebagai:<br />
+                FSPL = 92.4 + 20log10(f) + 20log10(d)<br />
+                Dimana f = frekuensi dalam GHz, d = jarak dalam km
+              </p>
+              <p class="editable" contenteditable="false">
+                Sebagai contoh, link 15 GHz sejauh 20 km:<br />
+                FSPL = 92.4 + 20log10(15) + 20log10(20) = 142.4 dB
+              </p>
+              <h3 class="editable" contenteditable="false">Fade Margin</h3>
+              <p class="editable" contenteditable="false">
+                Fade margin adalah kekuatan sinyal tambahan di atas ambang
+                penerima untuk memperhitungkan kondisi atmosfer. Persyaratan
+                tipikal:
+              </p>
+              <ul>
+                <li class="editable" contenteditable="false">
+                  Link pendek (&lt;10 km): 15-20 dB
+                </li>
+                <li class="editable" contenteditable="false">
+                  Link sedang (10-30 km): 20-30 dB
+                </li>
+                <li class="editable" contenteditable="false">
+                  Link panjang (&gt;30 km): 30-40 dB
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer editable" contenteditable="false">
+          Prepared by: Imam Wahyudi – Senior Microwave Technical Support
+        </div>
+      </div>
+
+      <!-- Slide 5: System Components -->
+      <div class="slide" id="slide5">
+        <div class="slide-indicator">
+          4 / 12
+          <button class="lang-toggle" onclick="toggleLanguage()">
+            <i class="fas fa-language"></i> ID
+          </button>
+          <button class="theme-toggle" onclick="toggleTheme()">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+        <div class="slide-header">
+          <div class="en-content">
+            <h2 class="slide-title editable" contenteditable="false">
+              System Components
+            </h2>
+          </div>
+          <div class="id-content">
+            <h2 class="slide-title editable" contenteditable="false">
+              Komponen Sistem
+            </h2>
+          </div>
+        </div>
+        <div class="slide-content">
+          <div class="bilingual">
+            <div class="column en-content">
+              <h3 class="editable" contenteditable="false">Main Components</h3>
+              <p class="editable" contenteditable="false">
+                A complete microwave radio link system consists of several key
+                components working together to provide reliable wireless
+                communication. Understanding each component's function is
+                essential for proper installation and maintenance.
+              </p>
+              <ul>
+                <li class="editable" contenteditable="false">
+                  <strong
+                    ><i class="fas fa-satellite-dish"></i> ODU (Outdoor
+                    Unit)</strong
+                  >
+                  – The radio transceiver mounted near the antenna. It handles
+                  RF signal conversion, amplification, and filtering. Modern
+                  ODUs are fully outdoor-rated with IP67 protection and operate
+                  in extreme temperatures (-40°C to +65°C).
+                </li>
+                <li class="editable" contenteditable="false">
+                  <strong
+                    ><i class="fas fa-server"></i> IDU (Indoor Unit)</strong
+                  >
+                  – The modem and interface equipment typically installed in a
+                  shelter or equipment room. It provides network interfaces
+                  (Ethernet, STM-1, etc.), performs multiplexing/demultiplexing,
+                  and manages the ODU remotely.
+                </li>
+                <li class="editable" contenteditable="false">
+                  <strong
+                    ><i class="fas fa-broadcast-tower"></i> Antenna</strong
+                  >
+                  – Parabolic reflector that focuses RF energy. Sizes range from
+                  0.3m to 4.2m depending on frequency and distance requirements.
+                  Larger antennas provide higher gain and better interference
+                  rejection.
+                </li>
+                <li class="editable" contenteditable="false">
+                  <strong
+                    ><i class="fas fa-network-wired"></i> Transmission
+                    Line</strong
+                  >
+                  – Connects ODU to IDU. Can be coaxial cable for shorter
+                  distances or fiber optic for longer distances. Fiber
+                  connections eliminate lightning risk and support longer
+                  distances.
+                </li>
+                <li class="editable" contenteditable="false">
+                  <strong
+                    ><i class="fas fa-desktop"></i> Management System
+                    (NMS)</strong
+                  >
+                  – Software platform for monitoring, configuration, and fault
+                  management. Provides real-time performance metrics, alarm
+                  management, and remote troubleshooting capabilities.
+                </li>
+              </ul>
+            </div>
+            <div class="column id-content">
+              <h3 class="editable" contenteditable="false">Komponen Utama</h3>
+              <p class="editable" contenteditable="false">
+                Sistem radio microwave link lengkap terdiri dari beberapa
+                komponen kunci yang bekerja sama untuk menyediakan komunikasi
+                nirkabel yang andal. Memahami fungsi setiap komponen sangat
+                penting untuk instalasi dan pemeliharaan yang tepat.
+              </p>
+              <ul>
+                <li class="editable" contenteditable="false">
+                  <strong
+                    ><i class="fas fa-satellite-dish"></i> ODU (Outdoor
+                    Unit)</strong
+                  >
+                  – Pemancar/penerima radio yang dipasang dekat antena. Ini
+                  menangani konversi sinyal RF, amplifikasi, dan filtering. ODU
+                  modern sepenuhnya tahan luar ruangan dengan perlindungan IP67
+                  dan beroperasi dalam suhu ekstrem (-40°C hingga +65°C).
+                </li>
+                <li class="editable" contenteditable="false">
+                  <strong
+                    ><i class="fas fa-server"></i> IDU (Indoor Unit)</strong
+                  >
+                  – Peralatan modem dan antarmuka yang biasanya dipasang di
+                  shelter atau ruang peralatan. Ini menyediakan antarmuka
+                  jaringan (Ethernet, STM-1, dll.), melakukan
+                  multiplexing/demultiplexing, dan mengelola ODU dari jarak
+                  jauh.
+                </li>
+                <li class="editable" contenteditable="false">
+                  <strong><i class="fas fa-broadcast-tower"></i> Antena</strong>
+                  – Reflektor parabola yang memfokuskan energi RF. Ukuran
+                  berkisar dari 0.3m hingga 4.2m tergantung pada persyaratan
+                  frekuensi dan jarak. Antena yang lebih besar memberikan gain
+                  lebih tinggi dan penolakan interferensi yang lebih baik.
+                </li>
+                <li class="editable" contenteditable="false">
+                  <strong
+                    ><i class="fas fa-network-wired"></i> Jalur
+                    Transmisi</strong
+                  >
+                  – Menghubungkan ODU ke IDU. Dapat berupa kabel koaksial untuk
+                  jarak yang lebih pendek atau serat optik untuk jarak yang
+                  lebih panjang. Koneksi serat menghilangkan risiko petir dan
+                  mendukung jarak yang lebih panjang.
+                </li>
+                <li class="editable" contenteditable="false">
+                  <strong
+                    ><i class="fas fa-desktop"></i> Sistem Manajemen
+                    (NMS)</strong
+                  >
+                  – Platform perangkat lunak untuk pemantauan, konfigurasi, dan
+                  manajemen fault. Menyediakan metrik performa real-time,
+                  manajemen alarm, dan kemampuan pemecahan masalah dari jarak
+                  jauh.
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer editable" contenteditable="false">
+          Prepared by: Imam Wahyudi – Senior Microwave Technical Support
+        </div>
+      </div>
+
+      <!-- Slide 6: Technical Case 1 -->
+      <div class="slide" id="slide6">
+        <div class="slide-indicator">
+          5 / 12
+          <button class="lang-toggle" onclick="toggleLanguage()">
+            <i class="fas fa-language"></i> ID
+          </button>
+          <button class="theme-toggle" onclick="toggleTheme()">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+        <div class="slide-header">
+          <div class="en-content">
+            <h2 class="slide-title editable" contenteditable="false">
+              Technical Case 1: Degraded RSL Level
+            </h2>
+          </div>
+          <div class="id-content">
+            <h2 class="slide-title editable" contenteditable="false">
+              Kasus Teknis 1: Penurunan Level RSL
+            </h2>
+          </div>
+        </div>
+        <div class="slide-content">
+          <div class="case-description">
+            <div class="bilingual">
+              <div class="column en-content">
+                <h3 class="editable" contenteditable="false">
+                  Case Description
+                </h3>
+                <p class="editable" contenteditable="false">
+                  <strong>Incident:</strong> A sudden degradation of the
+                  Received Signal Level (RSL) was observed on a critical 23 GHz
+                  microwave hop connecting a major cell site to the core
+                  network. The RSL dropped from –42 dBm to –68 dBm over a
+                  24-hour period, causing increased BER and reduced throughput.
+                </p>
+                <p class="editable" contenteditable="false">
+                  <strong>Impact:</strong> The degradation affected 4G/LTE
+                  services for approximately 50,000 subscribers, with increased
+                  latency and packet loss. While the link remained operational,
+                  service quality was significantly impacted.
+                </p>
+                <p class="editable" contenteditable="false">
+                  <strong>Initial Assessment:</strong> NMS alarms indicated "RSL
+                  Degradation" and "Increased BER" but no hardware faults were
+                  reported. Weather conditions were normal with no significant
+                  rain events.
+                </p>
+                <h3 class="editable" contenteditable="false">
+                  Root Cause Analysis
+                </h3>
+                <ul>
+                  <li class="editable" contenteditable="false">
+                    <i class="fas fa-arrows-alt"></i>
+                    <strong>Antenna Misalignment</strong> – Visual inspection
+                    revealed slight movement of the antenna due to strong winds
+                    (up to 80 km/h recorded in the area). The mounting bolts had
+                    loosened over time, allowing the antenna to shift by
+                    approximately 2 degrees.
+                  </li>
+                  <li class="editable" contenteditable="false">
+                    <i class="fas fa-rust"></i>
+                    <strong>Connector Corrosion</strong> – Moisture ingress in
+                    the RF connectors caused oxidation, increasing insertion
+                    loss by approximately 3 dB. This was confirmed with VSWR
+                    measurements showing 1.8:1 (normal: &lt;1.5:1).
+                  </li>
+                  <li class="editable" contenteditable="false">
+                    <i class="fas fa-mountain"></i>
+                    <strong>Vegetation Growth</strong> – New foliage on a tree
+                    line partially obstructed the Fresnel zone, causing
+                    additional diffraction loss estimated at 2-3 dB.
+                  </li>
+                </ul>
+              </div>
+              <div class="column id-content">
+                <h3 class="editable" contenteditable="false">
+                  Deskripsi Kasus
+                </h3>
+                <p class="editable" contenteditable="false">
+                  <strong>Insiden:</strong> Penurunan mendadak pada level daya
+                  terima (RSL) diamati pada hop microwave 23 GHz kritis yang
+                  menghubungkan situs seluler utama ke jaringan inti. RSL turun
+                  dari –42 dBm menjadi –68 dBm selama periode 24 jam,
+                  menyebabkan peningkatan BER dan penurunan throughput.
+                </p>
+                <p class="editable" contenteditable="false">
+                  <strong>Dampak:</strong> Degradasi memengaruhi layanan 4G/LTE
+                  untuk sekitar 50.000 pelanggan, dengan peningkatan latensi dan
+                  packet loss. Meskipun link tetap operasional, kualitas layanan
+                  sangat terpengaruh.
+                </p>
+                <p class="editable" contenteditable="false">
+                  <strong>Assesmen Awal:</strong> Alarm NMS menunjukkan
+                  "Degradasi RSL" dan "BER Meningkat" tetapi tidak ada fault
+                  perangkat keras yang dilaporkan. Kondisi cuaca normal tanpa
+                  peristiwa hujan signifikan.
+                </p>
+                <h3 class="editable" contenteditable="false">
+                  Analisis Akar Masalah
+                </h3>
+                <ul>
+                  <li class="editable" contenteditable="false">
+                    <i class="fas fa-arrows-alt"></i>
+                    <strong>Perubahan Arah Antena</strong> – Inspeksi visual
+                    mengungkapkan pergerakan sedikit antena karena angin kencang
+                    (hingga 80 km/h tercatat di area). Baut pemasangan telah
+                    longgar seiring waktu, memungkinkan antena bergeser sekitar
+                    2 derajat.
+                  </li>
+                  <li class="editable" contenteditable="false">
+                    <i class="fas fa-rust"></i>
+                    <strong>Korosi Konektor</strong> – Masuknya kelembapan dalam
+                    konektor RF menyebabkan oksidasi, meningkatkan insertion
+                    loss sekitar 3 dB. Ini dikonfirmasi dengan pengukuran VSWR
+                    menunjukkan 1.8:1 (normal: &lt;1.5:1).
+                  </li>
+                  <li class="editable" contenteditable="false">
+                    <i class="fas fa-mountain"></i>
+                    <strong>Pertumbuhan Vegetasi</strong> – Dedaunan baru pada
+                    garis pohon sebagian menghalangi Fresnel zone, menyebabkan
+                    diffraction loss tambahan diperkirakan 2-3 dB.
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer editable" contenteditable="false">
+          Prepared by: Imam Wahyudi – Senior Microwave Technical Support
+        </div>
+      </div>
+
+      <!-- Slide 7: Solution 1 -->
+      <div class="slide" id="slide7">
+        <div class="slide-indicator">
+          6 / 12
+          <button class="lang-toggle" onclick="toggleLanguage()">
+            <i class="fas fa-language"></i> ID
+          </button>
+          <button class="theme-toggle" onclick="toggleTheme()">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+        <div class="slide-header">
+          <div class="en-content">
+            <h2 class="slide-title editable" contenteditable="false">
+              Technical Solution 1: Degraded RSL
+            </h2>
+          </div>
+          <div class="id-content">
+            <h2 class="slide-title editable" contenteditable="false">
+              Solusi Teknis 1: Penurunan RSL
+            </h2>
+          </div>
+        </div>
+        <div class="slide-content">
+          <div class="solution-steps">
+            <div class="step en-content">
+              <h4 class="editable" contenteditable="false">
+                <i class="fas fa-search"></i> Site Assessment
+              </h4>
+              <ul>
+                <li class="editable" contenteditable="false">
+                  Conducted comprehensive site survey including physical
+                  inspection of antenna mounting structure, connectors, and
+                  transmission lines
+                </li>
+                <li class="editable" contenteditable="false">
+                  Used spectrum analyzer to identify any external interference
+                  sources
+                </li>
+                <li class="editable" contenteditable="false">
+                  Performed path profile analysis to confirm Fresnel zone
+                  clearance
+                </li>
+              </ul>
+            </div>
+            <div class="step en-content">
+              <h4 class="editable" contenteditable="false">
+                <i class="fas fa-tools"></i> Corrective Actions
+              </h4>
+              <ul>
+                <li class="editable" contenteditable="false">
+                  <strong>Antenna Realignment:</strong> Secured mounting bolts
+                  and performed fine-tuning alignment using spectrum analyzer.
+                  Achieved RSL improvement of 18 dB
+                </li>
+                <li class="editable" contenteditable="false">
+                  <strong>Connector Maintenance:</strong> Replaced corroded RF
+                  connectors and applied weatherproofing compound. Measured VSWR
+                  improved to 1.3:1
+                </li>
+                <li class="editable" contenteditable="false">
+                  <strong>Vegetation Management:</strong> Coordinated with local
+                  authorities to trim vegetation obstructing the path
+                </li>
+              </ul>
+            </div>
+            <div class="step en-content">
+              <h4 class="editable" contenteditable="false">
+                <i class="fas fa-chart-line"></i> Performance Validation
+              </h4>
+              <ul>
+                <li class="editable" contenteditable="false">
+                  Monitored link performance for 72 hours after corrective
+                  actions
+                </li>
+                <li class="editable" contenteditable="false">
+                  RSL stabilized at -40 dBm with normal fluctuations of ±2 dB
+                </li>
+                <li class="editable" contenteditable="false">
+                  BER returned to normal levels (&lt;10⁻⁸) with no error seconds
+                  recorded
+                </li>
+                <li class="editable" contenteditable="false">
+                  Throughput restored to full capacity (1 Gbps)
+                </li>
+              </ul>
+            </div>
+            <div class="step en-content">
+              <h4 class="editable" contenteditable="false">
+                <i class="fas fa-shield-alt"></i> Preventive Measures
+              </h4>
+              <ul>
+                <li class="editable" contenteditable="false">
+                  Implemented quarterly inspection schedule for all critical
+                  microwave sites
+                </li>
+                <li class="editable" contenteditable="false">
+                  Installed torque indicators on antenna mounting bolts for easy
+                  monitoring
+                </li>
+                <li class="editable" contenteditable="false">
+                  Enhanced weatherproofing of all external connectors with
+                  heat-shrink tubing
+                </li>
+                <li class="editable" contenteditable="false">
+                  Established vegetation management agreement with property
+                  owners
+                </li>
+              </ul>
+            </div>
+            <div class="step id-content">
+              <h4 class="editable" contenteditable="false">
+                <i class="fas fa-search"></i> Assesmen Situs
+              </h4>
+              <ul>
+                <li class="editable" contenteditable="false">
+                  Melakukan survei situs komprehensif termasuk inspeksi fisik
+                  struktur pemasangan antena, konektor, dan jalur transmisi
+                </li>
+                <li class="editable" contenteditable="false">
+                  Menggunakan spectrum analyzer untuk mengidentifikasi sumber
+                  interferensi eksternal
+                </li>
+                <li class="editable" contenteditable="false">
+                  Melakukan analisis path profile untuk mengkonfirmasi clearance
+                  Fresnel zone
+                </li>
+              </ul>
+            </div>
+            <div class="step id-content">
+              <h4 class="editable" contenteditable="false">
+                <i class="fas fa-tools"></i> Tindakan Korektif
+              </h4>
+              <ul>
+                <li class="editable" contenteditable="false">
+                  <strong>Realignment Antena:</strong> Mengamankan baut
+                  pemasangan dan melakukan penyetelan halus menggunakan spectrum
+                  analyzer. Mencapai peningkatan RSL 18 dB
+                </li>
+                <li class="editable" contenteditable="false">
+                  <strong>Pemeliharaan Konektor:</strong> Mengganti konektor RF
+                  yang berkarat dan menerapkan senyawa waterproofing. VSWR
+                  terukur meningkat menjadi 1.3:1
+                </li>
+                <li class="editable" contenteditable="false">
+                  <strong>Manajemen Vegetasi:</strong> Berkoordinasi dengan
+                  otoritas setempat untuk memangkas vegetasi yang menghalangi
+                  jalur
+                </li>
+              </ul>
+            </div>
+            <div class="step id-content">
+              <h4 class="editable" contenteditable="false">
+                <i class="fas fa-chart-line"></i> Validasi Performa
+              </h4>
+              <ul>
+                <li class="editable" contenteditable="false">
+                  Memantau performa link selama 72 jam setelah tindakan korektif
+                </li>
+                <li class="editable" contenteditable="false">
+                  RSL stabil pada -40 dBm dengan fluktuasi normal ±2 dB
+                </li>
+                <li class="editable" contenteditable="false">
+                  BER kembali ke level normal (&lt;10⁻⁸) tanpa detik kesalahan
+                  tercatat
+                </li>
+                <li class="editable" contenteditable="false">
+                  Throughput dipulihkan ke kapasitas penuh (1 Gbps)
+                </li>
+              </ul>
+            </div>
+            <div class="step id-content">
+              <h4 class="editable" contenteditable="false">
+                <i class="fas fa-shield-alt"></i> Tindakan Preventif
+              </h4>
+              <ul>
+                <li class="editable" contenteditable="false">
+                  Mengimplementasikan jadwal inspeksi triwulan untuk semua situs
+                  microwave kritis
+                </li>
+                <li class="editable" contenteditable="false">
+                  Memasang indikator torsi pada baut pemasangan antena untuk
+                  pemantauan mudah
+                </li>
+                <li class="editable" contenteditable="false">
+                  Meningkatkan waterproofing semua konektor eksternal dengan
+                  tabung heat-shrink
+                </li>
+                <li class="editable" contenteditable="false">
+                  Membuat perjanjian manajemen vegetasi dengan pemilik properti
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer editable" contenteditable="false">
+          Prepared by: Imam Wahyudi – Senior Microwave Technical Support
+        </div>
+      </div>
+
+      <!-- Slide 8: Technical Case 2 -->
+      <div class="slide" id="slide8">
+        <div class="slide-indicator">
+          7 / 12
+          <button class="lang-toggle" onclick="toggleLanguage()">
+            <i class="fas fa-language"></i> ID
+          </button>
+          <button class="theme-toggle" onclick="toggleTheme()">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+        <div class="slide-header">
+          <div class="en-content">
+            <h2 class="slide-title editable" contenteditable="false">
+              Technical Case 2: Complete Link Failure
+            </h2>
+          </div>
+          <div class="id-content">
+            <h2 class="slide-title editable" contenteditable="false">
+              Kasus Teknis 2: Kegagalan Link Total
+            </h2>
+          </div>
+        </div>
+        <div class="slide-content">
+          <div class="case-description">
+            <div class="bilingual">
+              <div class="column en-content">
+                <h3 class="editable" contenteditable="false">
+                  Case Description
+                </h3>
+                <p class="editable" contenteditable="false">
+                  <strong>Incident:</strong> A complete outage occurred on a 38
+                  GHz backbone link connecting two data centers. The NMS showed
+                  "Link Down" alarms with no response from either end. The link
+                  had been operational for 3 years without prior issues.
+                </p>
+                <p class="editable" contenteditable="false">
+                  <strong>Impact:</strong> Critical data replication services
+                  between data centers were interrupted, affecting business
+                  continuity. Backup systems were activated but with reduced
+                  capacity.
+                </p>
+                <p class="editable" contenteditable="false">
+                  <strong>Initial Findings:</strong> Remote access to both sites
+                  was unavailable. Weather conditions showed severe thunderstorm
+                  activity in the area around the time of failure.
+                </p>
+                <h3 class="editable" contenteditable="false">
+                  Root Cause Analysis
+                </h3>
+                <ul>
+                  <li class="editable" contenteditable="false">
+                    <i class="fas fa-bolt"></i>
+                    <strong>Lightning Strike</strong> – Evidence of lightning
+                    damage was found at both ends of the link. Surge protectors
+                    had activated but were insufficient to protect against a
+                    direct strike.
+                  </li>
+                  <li class="editable" contenteditable="false">
+                    <i class="fas fa-microchip"></i>
+                    <strong>ODU Failure</strong> – Both ODUs showed no LED
+                    indicators and failed to respond to local craft terminal
+                    access. Internal inspection revealed damaged power supply
+                    components and RF transceiver sections.
+                  </li>
+                  <li class="editable" contenteditable="false">
+                    <i class="fas fa-ethernet"></i>
+                    <strong>Network Equipment Damage</strong> – Ethernet
+                    switches connected to the IDUs also showed damage,
+                    indicating the surge propagated through the data lines.
+                  </li>
+                  <li class="editable" contenteditable="false">
+                    <i class="fas fa-plug"></i>
+                    <strong>Power Supply Issues</strong> – Site power systems
+                    showed voltage fluctuations during the storm, potentially
+                    contributing to equipment vulnerability.
+                  </li>
+                </ul>
+              </div>
+              <div class="column id-content">
+                <h3 class="editable" contenteditable="false">
+                  Deskripsi Kasus
+                </h3>
+                <p class="editable" contenteditable="false">
+                  <strong>Insiden:</strong> Outage total terjadi pada link
+                  backbone 38 GHz yang menghubungkan dua pusat data. NMS
+                  menunjukkan alarm "Link Down" tanpa respons dari kedua ujung.
+                  Link telah operasional selama 3 tahun tanpa masalah
+                  sebelumnya.
+                </p>
+                <p class="editable" contenteditable="false">
+                  <strong>Dampak:</strong> Layanan replikasi data kritis antara
+                  pusat data terganggu, memengaruhi kelangsungan bisnis. Sistem
+                  cadangan diaktifkan tetapi dengan kapasitas berkurang.
+                </p>
+                <p class="editable" contenteditable="false">
+                  <strong>Temuan Awal:</strong> Akses jarak jauh ke kedua situs
+                  tidak tersedia. Kondisi cuaca menunjukkan aktivitas badai
+                  petir hebat di area sekitar waktu kegagalan.
+                </p>
+                <h3 class="editable" contenteditable="false">
+                  Analisis Akar Masalah
+                </h3>
+                <ul>
+                  <li class="editable" contenteditable="false">
+                    <i class="fas fa-bolt"></i>
+                    <strong>Sambaran Petir</strong> – Bukti kerusakan petir
+                    ditemukan di kedua ujung link. Arrester telah diaktifkan
+                    tetapi tidak cukup untuk melindungi dari sambaran langsung.
+                  </li>
+                  <li class="editable" contenteditable="false">
+                    <i class="fas fa-microchip"></i>
+                    <strong>Kegagalan ODU</strong> – Kedua ODU tidak menunjukkan
+                    indikator LED dan gagal merespons akses terminal craft
+                    lokal. Inspeksi internal mengungkapkan komponen catu daya
+                    dan bagian transceiver RF yang rusak.
+                  </li>
+                  <li class="editable" contenteditable="false">
+                    <i class="fas fa-ethernet"></i>
+                    <strong>Kerusakan Peralatan Jaringan</strong> – Switch
+                    Ethernet yang terhubung ke IDU juga menunjukkan kerusakan,
+                    menunjukkan surge merambat melalui jalur data.
+                  </li>
+                  <li class="editable" contenteditable="false">
+                    <i class="fas fa-plug"></i>
+                    <strong>Masalah Catu Daya</strong> – Sistem daya situs
+                    menunjukkan fluktuasi tegangan selama badai, berpotensi
+                    berkontribusi pada kerentanan peralatan.
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer editable" contenteditable="false">
+          Prepared by: Imam Wahyudi – Senior Microwave Technical Support
+        </div>
+      </div>
+
+      <!-- Slide 9: Solution 2 -->
+      <div class="slide" id="slide9">
+        <div class="slide-indicator">
+          8 / 12
+          <button class="lang-toggle" onclick="toggleLanguage()">
+            <i class="fas fa-language"></i> ID
+          </button>
+          <button class="theme-toggle" onclick="toggleTheme()">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+        <div class="slide-header">
+          <div class="en-content">
+            <h2 class="slide-title editable" contenteditable="false">
+              Technical Solution 2: Complete Link Failure
+            </h2>
+          </div>
+          <div class="id-content">
+            <h2 class="slide-title editable" contenteditable="false">
+              Solusi Teknis 2: Kegagalan Link Total
+            </h2>
+          </div>
+        </div>
+        <div class="slide-content">
+          <div class="solution-steps">
+            <div class="step en-content">
+              <h4 class="editable" contenteditable="false">
+                <i class="fas fa-ambulance"></i> Emergency Response
+              </h4>
+              <ul>
+                <li class="editable" contenteditable="false">
+                  Activated disaster recovery plan within 30 minutes of incident
+                  detection
+                </li>
+                <li class="editable" contenteditable="false">
+                  Deployed temporary satellite connection to maintain critical
+                  services
+                </li>
+                <li class="editable" contenteditable="false">
+                  Dispatched technical team with spare equipment to both sites
+                </li>
+              </ul>
+            </div>
+            <div class="step en-content">
+              <h4 class="editable" contenteditable="false">
+                <i class="fas fa-tools"></i> Hardware Replacement
+              </h4>
+              <ul>
+                <li class="editable" contenteditable="false">
+                  Replaced both ODUs with spare units from inventory
+                </li>
+                <li class="editable" contenteditable="false">
+                  Installed additional surge protection devices at both ends
+                </li>
+                <li class="editable=" contenteditable="false">
+                  Replaced damaged Ethernet switches and verified network
+                  connectivity
+                </li>
+                <li class="editable" contenteditable="false">
+                  Tested all power systems and stabilized voltage regulators
+                </li>
+              </ul>
+            </div>
+            <div class="step en-content">
+              <h4 class="editable" contenteditable="false">
+                <i class="fas fa-cogs"></i> System Recommissioning
+              </h4>
+              <ul>
+                <li class="editable" contenteditable="false">
+                  Performed complete alignment of antennas using GPS coordinates
+                </li>
+                <li class="editable" contenteditable="false">
+                  Configured system parameters including frequency, modulation,
+                  and capacity
+                </li>
+                <li class="editable" contenteditable="false">
+                  Conducted end-to-end testing with loopback tests and BER
+                  measurements
+                </li>
+                <li class="editable" contenteditable="false">
+                  Integrated link back into network management system
+                </li>
+              </ul>
+            </div>
+            <div class="step en-content">
+              <h4 class="editable" contenteditable="false">
+                <i class="fas fa-shield-alt"></i> Enhanced Protection
+              </h4>
+              <ul>
+                <li class="editable" contenteditable="false">
+                  Upgraded lightning protection system with additional grounding
+                  rods
+                </li>
+                <li class="editable" contenteditable="false">
+                  Installed fiber optic isolators between IDUs and network
+                  equipment
+                </li>
+                <li class="editable" contenteditable="false">
+                  Implemented remote power monitoring with automatic shutdown
+                  capabilities
+                </li>
+                <li class="editable" contenteditable="false">
+                  Established quarterly testing schedule for all protection
+                  systems
+                </li>
+              </ul>
+            </div>
+            <div class="step id-content">
+              <h4 class="editable" contenteditable="false">
+                <i class="fas fa-ambulance"></i> Respons Darurat
+              </h4>
+              <ul>
+                <li class="editable" contenteditable="false">
+                  Mengaktifkan rencana pemulihan bencana dalam 30 menit setelah
+                  deteksi insiden
+                </li>
+                <li class="editable" contenteditable="false">
+                  Menyebarkan koneksi satelit sementara untuk mempertahankan
+                  layanan kritis
+                </li>
+                <li class="editable" contenteditable="false">
+                  Mengirim tim teknis dengan peralatan cadangan ke kedua situs
+                </li>
+              </ul>
+            </div>
+            <div class="step id-content">
+              <h4 class="editable" contenteditable="false">
+                <i class="fas fa-tools"></i> Penggantian Perangkat Keras
+              </h4>
+              <ul>
+                <li class="editable" contenteditable="false">
+                  Mengganti kedua ODU dengan unit cadangan dari inventaris
+                </li>
+                <li class="editable" contenteditable="false">
+                  Memasang perangkat proteksi surge tambahan di kedua ujung
+                </li>
+                <li class="editable" contenteditable="false">
+                  Mengganti switch Ethernet yang rusak dan memverifikasi
+                  konektivitas jaringan
+                </li>
+                <li class="editable" contenteditable="false">
+                  Menguji semua sistem daya dan menstabilkan regulator tegangan
+                </li>
+              </ul>
+            </div>
+            <div class="step id-content">
+              <h4 class="editable" contenteditable="false">
+                <i class="fas fa-cogs"></i> Pengkomisian Ulang Sistem
+              </h4>
+              <ul>
+                <li class="editable" contenteditable="false">
+                  Melakukan alignment antena lengkap menggunakan koordinat GPS
+                </li>
+                <li class="editable" contenteditable="false">
+                  Mengkonfigurasi parameter sistem termasuk frekuensi, modulasi,
+                  dan kapasitas
+                </li>
+                <li class="editable" contenteditable="false">
+                  Melakukan pengujian end-to-end dengan tes loopback dan
+                  pengukuran BER
+                </li>
+                <li class="editable" contenteditable="false">
+                  Mengintegrasikan link kembali ke sistem manajemen jaringan
+                </li>
+              </ul>
+            </div>
+            <div class="step id-content">
+              <h4 class="editable" contenteditable="false">
+                <i class="fas fa-shield-alt"></i> Proteksi yang Ditingkatkan
+              </h4>
+              <ul>
+                <li class="editable" contenteditable="false">
+                  Meningkatkan sistem proteksi petir dengan grounding rod
+                  tambahan
+                </li>
+                <li class="editable" contenteditable="false">
+                  Memasang isolator serat optik antara IDU dan peralatan
+                  jaringan
+                </li>
+                <li class="editable" contenteditable="false">
+                  Mengimplementasikan pemantauan daya jarak jauh dengan
+                  kemampuan shutdown otomatis
+                </li>
+                <li class="editable" contenteditable="false">
+                  Membuat jadwal pengujian triwulan untuk semua sistem proteksi
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer editable" contenteditable="false">
+          Prepared by: Imam Wahyudi – Senior Microwave Technical Support
+        </div>
+      </div>
+
+      <!-- Slide 10: Technical Case 3 -->
+      <div class="slide" id="slide10">
+        <div class="slide-indicator">
+          9 / 12
+          <button class="lang-toggle" onclick="toggleLanguage()">
+            <i class="fas fa-language"></i> ID
+          </button>
+          <button class="theme-toggle" onclick="toggleTheme()">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+        <div class="slide-header">
+          <div class="en-content">
+            <h2 class="slide-title editable" contenteditable="false">
+              Technical Case 3: Intermittent High BER
+            </h2>
+          </div>
+          <div class="id-content">
+            <h2 class="slide-title editable" contenteditable="false">
+              Kasus Teknis 3: BER Tinggi Intermittent
+            </h2>
+          </div>
+        </div>
+        <div class="slide-content">
+          <div class="case-description">
+            <div class="bilingual">
+              <div class="column en-content">
+                <h3 class="editable" contenteditable="false">
+                  Case Description
+                </h3>
+                <p class="editable" contenteditable="false">
+                  <strong>Incident:</strong> A 15 GHz microwave link serving as
+                  a backup connection between two corporate offices experienced
+                  intermittent high BER events. The BER would spike from normal
+                  levels (&lt;10⁻⁹) to unacceptable levels (&gt;10⁻³) for
+                  periods of 5-30 minutes, then return to normal.
+                </p>
+                <p class="editable" contenteditable="false">
+                  <strong>Impact:</strong> During high BER periods, data
+                  transmission would fail, causing application timeouts and
+                  retransmissions. The link was operating as backup, so primary
+                  services were not affected, but failover testing revealed the
+                  issue.
+                </p>
+                <p class="editable" contenteditable="false">
+                  <strong>Initial Investigation:</strong> Standard diagnostics
+                  showed no hardware faults. The issue occurred at various times
+                  of day and weather conditions, making it difficult to
+                  correlate with environmental factors.
+                </p>
+                <h3 class="editable" contenteditable="false">
+                  Root Cause Analysis
+                </h3>
+                <ul>
+                  <li class="editable" contenteditable="false">
+                    <i class="fas fa-broadcast-tower"></i>
+                    <strong>External Interference</strong> – Spectrum analysis
+                    revealed intermittent signals on adjacent channels from a
+                    newly installed 5G base station 2 km away. The interference
+                    occurred during peak usage periods.
+                  </li>
+                  <li class="editable" contenteditable="false">
+                    <i class="fas fa-cogs"></i>
+                    <strong>Adaptive Modulation Issues</strong> – The radio's
+                    ACM (Adaptive Coding and Modulation) system was too
+                    aggressive, switching to high-order modulation (256-QAM)
+                    even when conditions were marginal.
+                  </li>
+                  <li class="editable" contenteditable="false">
+                    <i class="fas fa-wind"></i>
+                    <strong>Atmospheric Ducting</strong> – Unusual weather
+                    patterns caused atmospheric ducting, allowing signals from
+                    distant sources to interfere with the link.
+                  </li>
+                </ul>
+              </div>
+              <div class="column id-content">
+                <h3 class="editable" contenteditable="false">
+                  Deskripsi Kasus
+                </h3>
+                <p class="editable" contenteditable="false">
+                  <strong>Insiden:</strong> Link microwave 15 GHz yang berfungsi
+                  sebagai koneksi cadangan antara dua kantor perusahaan
+                  mengalami peristiwa BER tinggi yang intermiten. BER akan
+                  melonjak dari level normal (&lt;10⁻⁹) ke level tidak dapat
+                  diterima (&gt;10⁻³) selama periode 5-30 menit, kemudian
+                  kembali normal.
+                </p>
+                <p class="editable" contenteditable="false">
+                  <strong>Dampak:</strong> Selama periode BER tinggi, transmisi
+                  data akan gagal, menyebabkan timeout aplikasi dan retransmisi.
+                  Link beroperasi sebagai cadangan, jadi layanan utama tidak
+                  terpengaruh, tetapi pengujian failover mengungkap masalah.
+                </p>
+                <p class="editable" contenteditable="false">
+                  <strong>Investigasi Awal:</strong> Diagnostik standar tidak
+                  menunjukkan fault perangkat keras. Masalah terjadi pada
+                  berbagai waktu sehari dan kondisi cuaca, membuatnya sulit
+                  dikorelasikan dengan faktor lingkungan.
+                </p>
+                <h3 class="editable" contenteditable="false">
+                  Analisis Akar Masalah
+                </h3>
+                <ul>
+                  <li class="editable" contenteditable="false">
+                    <i class="fas fa-broadcast-tower"></i>
+                    <strong>Interferensi Eksternal</strong> – Analisis spektrum
+                    mengungkapkan sinyal intermiten pada kanal yang berdekatan
+                    dari stasiun basis 5G yang baru dipasang 2 km jauhnya.
+                    Interferensi terjadi selama periode penggunaan puncak.
+                  </li>
+                  <li class="editable" contenteditable="false">
+                    <i class="fas fa-cogs"></i>
+                    <strong>Masalah Modulasi Adaptif</strong> – Sistem ACM
+                    (Adaptive Coding and Modulation) radio terlalu agresif,
+                    beralih ke modulasi orde tinggi (256-QAM) bahkan ketika
+                    kondisi marjinal.
+                  </li>
+                  <li class="editable" contenteditable="false">
+                    <i class="fas fa-wind"></i>
+                    <strong>Ducting Atmosfer</strong> – Pola cuaca tidak biasa
+                    menyebabkan ducting atmosfer, memungkinkan sinyal dari
+                    sumber jauh mengganggu link.
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer editable" contenteditable="false">
+          Prepared by: Imam Wahyudi – Senior Microwave Technical Support
+        </div>
+      </div>
+
+      <!-- Slide 11: Solution 3 -->
+      <div class="slide" id="slide11">
+        <div class="slide-indicator">
+          10 / 12
+          <button class="lang-toggle" onclick="toggleLanguage()">
+            <i class="fas fa-language"></i> ID
+          </button>
+          <button class="theme-toggle" onclick="toggleTheme()">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+        <div class="slide-header">
+          <div class="en-content">
+            <h2 class="slide-title editable" contenteditable="false">
+              Technical Solution 3: Intermittent High BER
+            </h2>
+          </div>
+          <div class="id-content">
+            <h2 class="slide-title editable" contenteditable="false">
+              Solusi Teknis 3: BER Tinggi Intermittent
+            </h2>
+          </div>
+        </div>
+        <div class="slide-content">
+          <div class="solution-steps">
+            <div class="step en-content">
+              <h4 class="editable" contenteditable="false">
+                <i class="fas fa-chart-bar"></i> Interference Mitigation
+              </h4>
+              <ul>
+                <li class="editable" contenteditable="false">
+                  Coordinated with 5G operator to adjust frequency plan and
+                  reduce transmit power during critical periods
+                </li>
+                <li class="editable" contenteditable="false">
+                  Installed band-pass filters to reject out-of-band interference
+                </li>
+                <li class="editable" contenteditable="false">
+                  Optimized antenna polarization to minimize coupling with
+                  interfering signals
+                </li>
+              </ul>
+            </div>
+            <div class="step en-content">
+              <h4 class="editable" contenteditable="false">
+                <i class="fas fa-cogs"></i> Radio Configuration
+              </h4>
+              <ul>
+                <li class="editable" contenteditable="false">
+                  Modified ACM parameters to be more conservative, maintaining
+                  lower modulation during marginal conditions
+                </li>
+                <li class="editable" contenteditable="false">
+                  Implemented fixed modulation mode during peak interference
+                  periods as a temporary measure
+                </li>
+                <li class="editable" contenteditable="false">
+                  Adjusted power levels to optimize signal-to-interference ratio
+                </li>
+              </ul>
+            </div>
+            <div class="step en-content">
+              <h4 class="editable" contenteditable="false">
+                <i class="fas fa-tools"></i> Hardware Optimization
+              </h4>
+              <ul>
+                <li class="editable" contenteditable="false">
+                  Replaced standard antennas with high-performance models
+                  featuring better side-lobe suppression
+                </li>
+                <li class="editable" contenteditable="false">
+                  Upgraded transmission lines to low-loss variants
+                </li>
+                <li class="editable" contenteditable="false">
+                  Installed additional shielding on connectors and cables
+                </li>
+              </ul>
+            </div>
+            <div class="step en-content">
+              <h4 class="editable" contenteditable="false">
+                <i class="fas fa-chart-line"></i> Monitoring and Maintenance
+              </h4>
+              <ul>
+                <li class="editable" contenteditable="false">
+                  Implemented continuous spectrum monitoring with automated
+                  alerts for interference detection
+                </li>
+                <li class="editable" contenteditable="false">
+                  Established regular performance reviews to identify trends and
+                  potential issues
+                </li>
+                <li class="editable" contenteditable="false">
+                  Created procedures for rapid response to interference events
+                </li>
+              </ul>
+            </div>
+            <div class="step id-content">
+              <h4 class="editable" contenteditable="false">
+                <i class="fas fa-chart-bar"></i> Mitigasi Interferensi
+              </h4>
+              <ul>
+                <li class="editable" contenteditable="false">
+                  Berkoordinasi dengan operator 5G untuk menyesuaikan rencana
+                  frekuensi dan mengurangi daya transmisi selama periode kritis
+                </li>
+                <li class="editable" contenteditable="false">
+                  Memasang filter band-pass untuk menolak interferensi
+                  out-of-band
+                </li>
+                <li class="editable" contenteditable="false">
+                  Mengoptimalkan polarisasi antena untuk meminimalkan coupling
+                  dengan sinyal yang mengganggu
+                </li>
+              </ul>
+            </div>
+            <div class="step id-content">
+              <h4 class="editable" contenteditable="false">
+                <i class="fas fa-cogs"></i> Konfigurasi Radio
+              </h4>
+              <ul>
+                <li class="editable" contenteditable="false">
+                  Memodifikasi parameter ACM untuk lebih konservatif,
+                  mempertahankan modulasi lebih rendah selama kondisi marjinal
+                </li>
+                <li class="editable" contenteditable="false">
+                  Mengimplementasikan mode modulasi tetap selama periode
+                  interferensi puncak sebagai langkah sementara
+                </li>
+                <li class="editable" contenteditable="false">
+                  Menyesuaikan level daya untuk mengoptimalkan
+                  signal-to-interference ratio
+                </li>
+              </ul>
+            </div>
+            <div class="step id-content">
+              <h4 class="editable" contenteditable="false">
+                <i class="fas fa-tools"></i> Optimasi Perangkat Keras
+              </h4>
+              <ul>
+                <li class="editable" contenteditable="false">
+                  Mengganti antena standar dengan model kinerja tinggi yang
+                  menampilkan penekanan side-lobe yang lebih baik
+                </li>
+                <li class="editable" contenteditable="false">
+                  Meningkatkan jalur transmisi ke varian low-loss
+                </li>
+                <li class="editable" contenteditable="false">
+                  Memasang perisai tambahan pada konektor dan kabel
+                </li>
+              </ul>
+            </div>
+            <div class="step id-content">
+              <h4 class="editable" contenteditable="false">
+                <i class="fas fa-chart-line"></i> Pemantauan dan Pemeliharaan
+              </h4>
+              <ul>
+                <li class="editable" contenteditable="false">
+                  Mengimplementasikan pemantauan spektrum kontinu dengan
+                  peringatan otomatis untuk deteksi interferensi
+                </li>
+                <li class="editable" contenteditable="false">
+                  Membuat ulasan performa reguler untuk mengidentifikasi tren
+                  dan masalah potensial
+                </li>
+                <li class="editable" contenteditable="false">
+                  Membuat prosedur untuk respons cepat terhadap peristiwa
+                  interferensi
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer editable" contenteditable="false">
+          Prepared by: Imam Wahyudi – Senior Microwave Technical Support
+        </div>
+      </div>
+
+      <!-- Slide 12: Best Practices -->
+      <div class="slide" id="slide12">
+        <div class="slide-indicator">
+          11 / 12
+          <button class="lang-toggle" onclick="toggleLanguage()">
+            <i class="fas fa-language"></i> ID
+          </button>
+          <button class="theme-toggle" onclick="toggleTheme()">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+        <div class="slide-header">
+          <div class="en-content">
+            <h2 class="slide-title editable" contenteditable="false">
+              Best Practices
+            </h2>
+          </div>
+          <div class="id-content">
+            <h2 class="slide-title editable" contenteditable="false">
+              Praktik Terbaik
+            </h2>
+          </div>
+        </div>
+        <div class="slide-content">
+          <div class="bilingual">
+            <div class="column en-content">
+              <h3 class="editable" contenteditable="false">
+                Design and Planning
+              </h3>
+              <ul>
+                <li class="editable" contenteditable="false">
+                  <i class="fas fa-map"></i>
+                  <strong>Comprehensive Path Survey:</strong> Conduct detailed
+                  site surveys including path profiling, obstacle analysis, and
+                  interference assessment before deployment
+                </li>
+                <li class="editable" contenteditable="false">
+                  <i class="fas fa-calculator"></i>
+                  <strong>Adequate Fade Margin:</strong> Design links with
+                  sufficient fade margin (20-40 dB) to account for atmospheric
+                  conditions and equipment aging
+                </li>
+                <li class="editable" contenteditable="false">
+                  <i class="fas fa-shield-alt"></i>
+                  <strong>Redundancy Planning:</strong> Implement diverse
+                  routing and protection switching for critical links
+                </li>
+                <li class="editable" contenteditable="false">
+                  <i class="fas fa-cloud-sun"></i>
+                  <strong>Environmental Considerations:</strong> Account for
+                  local weather patterns, temperature extremes, and seasonal
+                  variations
+                </li>
+              </ul>
+              <h3 class="editable" contenteditable="false">
+                Installation and Commissioning
+              </h3>
+              <ul>
+                <li class="editable" contenteditable="false">
+                  <i class="fas fa-tools"></i>
+                  <strong>Quality Installation:</strong> Use certified
+                  technicians and follow manufacturer specifications for all
+                  hardware
+                </li>
+                <li class="editable" contenteditable="false">
+                  <i class="fas fa-crosshairs"></i>
+                  <strong>Precise Alignment:</strong> Utilize professional
+                  alignment tools and verify with spectrum analyzers
+                </li>
+                <li class="editable" contenteditable="false">
+                  <i class="fas fa-bolt"></i>
+                  <strong>Proper Grounding:</strong> Implement comprehensive
+                  grounding and lightning protection systems
+                </li>
+                <li class="editable" contenteditable="false">
+                  <i class="fas fa-clipboard-check"></i>
+                  <strong>Thorough Testing:</strong> Conduct comprehensive
+                  acceptance testing including BER tests and throughput
+                  validation
+                </li>
+              </ul>
+            </div>
+            <div class="column id-content">
+              <h3 class="editable" contenteditable="false">
+                Desain dan Perencanaan
+              </h3>
+              <ul>
+                <li class="editable" contenteditable="false">
+                  <i class="fas fa-map"></i>
+                  <strong>Survei Jalur Komprehensif:</strong> Lakukan survei
+                  situs terperinci termasuk profiling jalur, analisis rintangan,
+                  dan asesmen interferensi sebelum penyebaran
+                </li>
+                <li class="editable" contenteditable="false">
+                  <i class="fas fa-calculator"></i>
+                  <strong>Fade Margin yang Memadai:</strong> Rancang link dengan
+                  fade margin yang cukup (20-40 dB) untuk memperhitungkan
+                  kondisi atmosfer dan penuaan peralatan
+                </li>
+                <li class="editable" contenteditable="false">
+                  <i class="fas fa-shield-alt"></i>
+                  <strong>Perencanaan Redundansi:</strong> Implementasikan
+                  routing yang beragam dan proteksi switching untuk link kritis
+                </li>
+                <li class="editable" contenteditable="false">
+                  <i class="fas fa-cloud-sun"></i>
+                  <strong>Pertimbangan Lingkungan:</strong> Perhitungkan pola
+                  cuaca lokal, suhu ekstrem, dan variasi musiman
+                </li>
+              </ul>
+              <h3 class="editable" contenteditable="false">
+                Instalasi dan Komisioning
+              </h3>
+              <ul>
+                <li class="editable" contenteditable="false">
+                  <i class="fas fa-tools"></i>
+                  <strong>Instalasi Berkualitas:</strong> Gunakan teknisi
+                  bersertifikat dan ikuti spesifikasi produsen untuk semua
+                  perangkat keras
+                </li>
+                <li class="editable" contenteditable="false">
+                  <i class="fas fa-crosshairs"></i>
+                  <strong>Alignment Presisi:</strong> Gunakan alat alignment
+                  profesional dan verifikasi dengan spectrum analyzer
+                </li>
+                <li class="editable" contenteditable="false">
+                  <i class="fas fa-bolt"></i>
+                  <strong>Grounding yang Tepat:</strong> Implementasikan sistem
+                  grounding dan proteksi petir yang komprehensif
+                </li>
+                <li class="editable" contenteditable="false">
+                  <i class="fas fa-clipboard-check"></i>
+                  <strong>Pengujian Thorough:</strong> Lakukan pengujian
+                  penerimaan komprehensif termasuk tes BER dan validasi
+                  throughput
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="bilingual">
+            <div class="column en-content">
+              <h3 class="editable" contenteditable="false">
+                Operations and Maintenance
+              </h3>
+              <ul>
+                <li class="editable" contenteditable="false">
+                  <i class="fas fa-chart-line"></i>
+                  <strong>Continuous Monitoring:</strong> Implement 24/7
+                  monitoring with automated alerts for performance degradation
+                </li>
+                <li class="editable" contenteditable="false">
+                  <i class="fas fa-calendar-check"></i>
+                  <strong>Preventive Maintenance:</strong> Establish regular
+                  inspection schedules and perform proactive maintenance
+                </li>
+                <li class="editable" contenteditable="false">
+                  <i class="fas fa-database"></i>
+                  <strong>Performance Analysis:</strong> Regularly review
+                  performance metrics and trends to identify potential issues
+                </li>
+                <li class="editable" contenteditable="false">
+                  <i class="fas fa-users"></i>
+                  <strong>Staff Training:</strong> Ensure technical staff are
+                  properly trained on equipment and troubleshooting procedures
+                </li>
+              </ul>
+            </div>
+            <div class="column id-content">
+              <h3 class="editable" contenteditable="false">
+                Operasi dan Pemeliharaan
+              </h3>
+              <ul>
+                <li class="editable" contenteditable="false">
+                  <i class="fas fa-chart-line"></i>
+                  <strong>Pemantauan Kontinu:</strong> Implementasikan
+                  pemantauan 24/7 dengan peringatan otomatis untuk degradasi
+                  performa
+                </li>
+                <li class="editable" contenteditable="false">
+                  <i class="fas fa-calendar-check"></i>
+                  <strong>Pemeliharaan Preventif:</strong> Buat jadwal inspeksi
+                  reguler dan lakukan pemeliharaan proaktif
+                </li>
+                <li class="editable" contenteditable="false">
+                  <i class="fas fa-database"></i>
+                  <strong>Analisis Performa:</strong> Tinjau secara teratur
+                  metrik performa dan tren untuk mengidentifikasi masalah
+                  potensial
+                </li>
+                <li class="editable" contenteditable="false">
+                  <i class="fas fa-users"></i>
+                  <strong>Pelatihan Staf:</strong> Pastikan staf teknis dilatih
+                  dengan benar pada peralatan dan prosedur pemecahan masalah
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer editable" contenteditable="false">
+          Prepared by: Imam Wahyudi – Senior Microwave Technical Support
+        </div>
+      </div>
+
+      <!-- Slide 13: References -->
+      <div class="slide" id="slide13">
+        <div class="slide-indicator">
+          12 / 12
+          <button class="lang-toggle" onclick="toggleLanguage()">
+            <i class="fas fa-language"></i> ID
+          </button>
+          <button class="theme-toggle" onclick="toggleTheme()">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+        <div class="slide-header">
+          <div class="en-content">
+            <h2 class="slide-title editable" contenteditable="false">
+              References
+            </h2>
+          </div>
+          <div class="id-content">
+            <h2 class="slide-title editable" contenteditable="false">
+              Referensi
+            </h2>
+          </div>
+        </div>
+        <div class="slide-content">
+          <div class="references">
+            <div class="reference-item en-content">
+              <h3 class="editable" contenteditable="false">
+                <i class="fas fa-book"></i> Vendor Documentation
+              </h3>
+              <p class="editable" contenteditable="false">
+                NEC PASOLINK Technical Manuals<br />
+                Ceragon FibeAir IP-20 Documentation<br />
+                Huawei RTN 900 Series Configuration Guides<br />
+                ZTE ZXMP S Series Product Specifications
+              </p>
+            </div>
+            <div class="reference-item id-content">
+              <h3 class="editable" contenteditable="false">
+                <i class="fas fa-book"></i> Dokumentasi Vendor
+              </h3>
+              <p class="editable" contenteditable="false">
+                Manual Teknis NEC PASOLINK<br />
+                Dokumentasi Ceragon FibeAir IP-20<br />
+                Panduan Konfigurasi Huawei RTN 900 Series<br />
+                Spesifikasi Produk ZTE ZXMP S Series
+              </p>
+            </div>
+            <div class="reference-item en-content">
+              <h3 class="editable" contenteditable="false">
+                <i class="fas fa-file-alt"></i> Industry Standards
+              </h3>
+              <p class="editable" contenteditable="false">
+                ITU-T G.826: Error performance parameters<br />
+                ITU-T G.828: Availability performance<br />
+                ETSI EN 300 197: Fixed Radio Systems<br />
+                FCC Part 101: Microwave Radio Standards
+              </p>
+            </div>
+            <div class="reference-item id-content">
+              <h3 class="editable" contenteditable="false">
+                <i class="fas fa-file-alt"></i> Standar Industri
+              </h3>
+              <p class="editable" contenteditable="false">
+                ITU-T G.826: Parameter performa kesalahan<br />
+                ITU-T G.828: Performa ketersediaan<br />
+                ETSI EN 300 197: Sistem Radio Tetap<br />
+                FCC Part 101: Standar Radio Microwave
+              </p>
+            </div>
+            <div class="reference-item en-content">
+              <h3 class="editable" contenteditable="false">
+                <i class="fas fa-graduation-cap"></i> Training Resources
+              </h3>
+              <p class="editable" contenteditable="false">
+                Microwave Link Engineering Certification<br />
+                Radio Frequency Fundamentals Course<br />
+                Advanced Troubleshooting Techniques<br />
+                Network Management Systems Training
+              </p>
+            </div>
+            <div class="reference-item id-content">
+              <h3 class="editable" contenteditable="false">
+                <i class="fas fa-graduation-cap"></i> Sumber Pelatihan
+              </h3>
+              <p class="editable" contenteditable="false">
+                Sertifikasi Teknik Link Microwave<br />
+                Kursus Dasar Radio Frekuensi<br />
+                Teknik Pemecahan Masalah Lanjutan<br />
+                Pelatihan Sistem Manajemen Jaringan
+              </p>
+            </div>
+            <div class="reference-item en-content">
+              <h3 class="editable" contenteditable="false">
+                <i class="fas fa-tools"></i> Field Experience
+              </h3>
+              <p class="editable" contenteditable="false">
+                15+ years of microwave deployment experience<br />
+                500+ successful link installations<br />
+                Comprehensive troubleshooting database<br />
+                Best practices documentation
+              </p>
+            </div>
+            <div class="reference-item id-content">
+              <h3 class="editable" contenteditable="false">
+                <i class="fas fa-tools"></i> Pengalaman Lapangan
+              </h3>
+              <p class="editable" contenteditable="false">
+                15+ tahun pengalaman penyebaran microwave<br />
+                500+ instalasi link berhasil<br />
+                Database pemecahan masalah komprehensif<br />
+                Dokumentasi praktik terbaik
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer editable" contenteditable="false">
+          Prepared by: Imam Wahyudi – Senior Microwave Technical Support
+        </div>
+      </div>
+
+      <div class="navigation">
+        <button class="nav-btn" onclick="prevSlide()">
+          <i class="fas fa-chevron-left"></i> Previous
+        </button>
+        <button class="nav-btn" onclick="nextSlide()">
+          Next <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <script>
+      // Configuration
+      let currentSlide = 1;
+      const totalSlides = 13;
+      let currentLang = "en"; // Default language
+      let editMode = false;
+      let isLoggedIn = false;
+      let draggedElement = null;
+      let resizingElement = null;
+      let startX, startY, startWidth, startHeight, startLeft, startTop;
+      let isDarkMode = true;
+      let exportLanguage = "en"; // Default export language
+
+      // Initialize on page load
+      window.onload = function () {
+        loadFromLocalStorage();
+        updateThemeIcon();
+      };
+
+      // Toast notification function
+      function showToast(message, type = "info") {
+        const toast = document.getElementById("toast");
+        const toastMessage = document.getElementById("toast-message");
+
+        // Set message
+        toastMessage.textContent = message;
+
+        // Set type class
+        toast.className = "toast";
+        toast.classList.add(type);
+
+        // Show toast
+        setTimeout(() => {
+          toast.classList.add("show");
+        }, 100);
+
+        // Hide toast after 3 seconds
+        setTimeout(() => {
+          toast.classList.remove("show");
+        }, 3000);
+      }
+
+      function showLoginModal() {
+        document.getElementById("loginModal").classList.add("active");
+        document.getElementById("passwordInput").value = "";
+        document.getElementById("passwordInput").focus();
+        document.getElementById("errorMessage").textContent = "";
+      }
+
+      function closeLoginModal() {
+        document.getElementById("loginModal").classList.remove("active");
+      }
+
+      function showExportModal() {
+        document.getElementById("exportModal").classList.add("active");
+      }
+
+      function closeExportModal() {
+        document.getElementById("exportModal").classList.remove("active");
+      }
+
+      function showProgress(text) {
+        const progressContainer = document.getElementById("progressContainer");
+        const progressText = document.getElementById("progressText");
+        const progressFill = document.getElementById("progressFill");
+
+        progressText.textContent = text;
+        progressFill.style.width = "0%";
+        progressContainer.classList.add("active");
+      }
+
+      function updateProgress(percent) {
+        const progressFill = document.getElementById("progressFill");
+        progressFill.style.width = percent + "%";
+      }
+
+      function hideProgress() {
+        const progressContainer = document.getElementById("progressContainer");
+        progressContainer.classList.remove("active");
+      }
+
+      function login() {
+        const passwordInput = document.getElementById("passwordInput");
+        const errorMessage = document.getElementById("errorMessage");
+        const password = passwordInput.value;
+
+        if (password === "ImamWay") {
+          isLoggedIn = true;
+          closeLoginModal();
+          toggleEditMode();
+          errorMessage.textContent = "";
+          showToast("Login successful! Edit mode activated.", "success");
+        } else {
+          errorMessage.textContent = "Incorrect password. Please try again.";
+          passwordInput.value = "";
+          passwordInput.focus();
+          showToast("Incorrect password. Please try again.", "error");
+        }
+      }
+
+      function logout() {
+        isLoggedIn = false;
+        showToast("You have been logged out successfully.", "info");
+
+        // Exit edit mode if active
+        if (editMode) {
+          toggleEditMode();
+        }
+      }
+
+      // Toggle between dark and light mode
+      function toggleTheme() {
+        const body = document.body;
+        const themeIcon = document.querySelector(".theme-toggle i");
+
+        if (isDarkMode) {
+          body.classList.remove("dark-mode");
+          body.classList.add("light-mode");
+          themeIcon.classList.remove("fa-moon");
+          themeIcon.classList.add("fa-sun");
+          isDarkMode = false;
+          showToast("Switched to light mode", "info");
+        } else {
+          body.classList.remove("light-mode");
+          body.classList.add("dark-mode");
+          themeIcon.classList.remove("fa-sun");
+          themeIcon.classList.add("fa-moon");
+          isDarkMode = true;
+          showToast("Switched to dark mode", "info");
+        }
+      }
+
+      // Update theme icon based on current mode
+      function updateThemeIcon() {
+        const themeIcon = document.querySelector(".theme-toggle i");
+        if (isDarkMode) {
+          themeIcon.classList.remove("fa-sun");
+          themeIcon.classList.add("fa-moon");
+        } else {
+          themeIcon.classList.remove("fa-moon");
+          themeIcon.classList.add("fa-sun");
+        }
+      }
+
+      // Allow Enter key to submit login
+      document
+        .getElementById("passwordInput")
+        .addEventListener("keypress", function (e) {
+          if (e.key === "Enter") {
+            login();
+          }
+        });
+
+      function showSlide(n) {
+        const slides = document.querySelectorAll(".slide");
+
+        if (n > totalSlides) currentSlide = 1;
+        if (n < 1) currentSlide = totalSlides;
+
+        slides.forEach((slide) => slide.classList.remove("active"));
+        document.getElementById(`slide${currentSlide}`).classList.add("active");
+      }
+
+      function nextSlide() {
+        currentSlide++;
+        showSlide(currentSlide);
+      }
+
+      function prevSlide() {
+        currentSlide--;
+        showSlide(currentSlide);
+      }
+
+      function toggleLanguage() {
+        const body = document.body;
+        const langButton = document.querySelector(".lang-toggle");
+
+        if (currentLang === "en") {
+          body.classList.remove("lang-en");
+          body.classList.add("lang-id");
+          langButton.innerHTML = '<i class="fas fa-language"></i> EN';
+          currentLang = "id";
+          showToast("Bahasa Indonesia", "info");
+        } else {
+          body.classList.remove("lang-id");
+          body.classList.add("lang-en");
+          langButton.innerHTML = '<i class="fas fa-language"></i> ID';
+          currentLang = "en";
+          showToast("English language", "info");
+        }
+      }
+
+      function toggleEditMode() {
+        if (!isLoggedIn) {
+          showLoginModal();
+          return;
+        }
+
+        editMode = !editMode;
+        const editToggleBtn = document.getElementById("editToggleBtn");
+        const saveBtn = document.getElementById("saveBtn");
+        const addImageBtn = document.getElementById("addImageBtn");
+        const exitBtn = document.getElementById("exitBtn");
+        const logoutBtn = document.getElementById("logoutBtn");
+        const editables = document.querySelectorAll(".editable");
+        const slideImages = document.querySelectorAll(".slide-image");
+
+        if (editMode) {
+          // Show edit controls
+          saveBtn.style.display = "flex";
+          addImageBtn.style.display = "flex";
+          exitBtn.style.display = "flex";
+          logoutBtn.style.display = "flex";
+          editToggleBtn.style.display = "none";
+
+          // Enable content editing
+          editables.forEach((el) => {
+            el.contentEditable = true;
+            el.style.cursor = "text";
+          });
+          slideImages.forEach((img) => {
+            img.classList.add("editing");
+          });
+          showToast("Edit mode activated", "success");
+        } else {
+          // Hide edit controls
+          saveBtn.style.display = "none";
+          addImageBtn.style.display = "none";
+          exitBtn.style.display = "none";
+          logoutBtn.style.display = "none";
+          editToggleBtn.style.display = "flex";
+
+          // Disable content editing
+          editables.forEach((el) => {
+            el.contentEditable = false;
+            el.style.cursor = "default";
+          });
+          slideImages.forEach((img) => {
+            img.classList.remove("editing");
+          });
+          showToast("Edit mode deactivated", "info");
+        }
+      }
+
+      function saveChanges() {
+        const presentationData = {
+          slides: {},
+        };
+
+        // Save text content
+        for (let i = 1; i <= totalSlides; i++) {
+          const slide = document.getElementById(`slide${i}`);
+          const editables = slide.querySelectorAll(".editable");
+          presentationData.slides[i] = {
+            content: {},
+          };
+
+          editables.forEach((el, index) => {
+            presentationData.slides[i].content[index] = el.innerHTML;
+          });
+        }
+
+        // Save images
+        const images = document.querySelectorAll(".slide-image");
+        presentationData.images = [];
+
+        images.forEach((img) => {
+          presentationData.images.push({
+            src: img.src,
+            slide: img.parentElement.id,
+            width: img.style.width,
+            height: img.style.height,
+            left: img.style.left,
+            top: img.style.top,
+          });
+        });
+
+        localStorage.setItem(
+          "presentationData",
+          JSON.stringify(presentationData)
+        );
+        showToast("Changes saved successfully!", "success");
+      }
+
+      function loadFromLocalStorage() {
+        const savedData = localStorage.getItem("presentationData");
+        if (!savedData) return;
+
+        const presentationData = JSON.parse(savedData);
+
+        // Load text content
+        for (let i = 1; i <= totalSlides; i++) {
+          if (!presentationData.slides[i]) continue;
+
+          const slide = document.getElementById(`slide${i}`);
+          const editables = slide.querySelectorAll(".editable");
+
+          editables.forEach((el, index) => {
+            if (presentationData.slides[i].content[index]) {
+              el.innerHTML = presentationData.slides[i].content[index];
+            }
+          });
+        }
+
+        // Load images
+        if (presentationData.images) {
+          presentationData.images.forEach((imgData) => {
+            const slide = document.getElementById(imgData.slide);
+            if (!slide) return;
+
+            const img = document.createElement("img");
+            img.src = imgData.src;
+            img.className = "slide-image";
+            img.style.width = imgData.width || "200px";
+            img.style.height = imgData.height || "auto";
+            img.style.left = imgData.left || "50px";
+            img.style.top = imgData.top || "50px";
+
+            addImageControls(img);
+            slide.appendChild(img);
+          });
+        }
+      }
+
+      function addImage() {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = "image/*";
+        input.onchange = function (e) {
+          const file = e.target.files[0];
+          if (!file) return;
+
+          const reader = new FileReader();
+          reader.onload = function (event) {
+            const img = document.createElement("img");
+            img.src = event.target.result;
+            img.className = "slide-image";
+            img.style.width = "200px";
+            img.style.height = "auto";
+            img.style.left = "50px";
+            img.style.top = "50px";
+
+            addImageControls(img);
+
+            const currentSlideEl = document.getElementById(
+              `slide${currentSlide}`
+            );
+            currentSlideEl.appendChild(img);
+            showToast("Image added successfully", "success");
+          };
+          reader.readAsDataURL(file);
+        };
+        input.click();
+      }
+
+      function addImageControls(img) {
+        // Add resize handle
+        const resizeHandle = document.createElement("div");
+        resizeHandle.className = "resize-handle";
+        img.appendChild(resizeHandle);
+
+        // Add delete button
+        const deleteBtn = document.createElement("div");
+        deleteBtn.className = "delete-btn";
+        deleteBtn.innerHTML = "×";
+        deleteBtn.onclick = function () {
+          img.remove();
+          showToast("Image removed", "info");
+        };
+        img.appendChild(deleteBtn);
+
+        // Make draggable
+        img.onmousedown = function (e) {
+          if (e.target === resizeHandle) {
+            startResize(e, img);
+          } else {
+            startDrag(e, img);
+          }
+        };
+      }
+
+      function startDrag(e, img) {
+        draggedElement = img;
+        startX = e.clientX - img.offsetLeft;
+        startY = e.clientY - img.offsetTop;
+
+        document.onmousemove = function (e) {
+          if (!draggedElement) return;
+
+          const newX = e.clientX - startX;
+          const newY = e.clientY - startY;
+
+          draggedElement.style.left = newX + "px";
+          draggedElement.style.top = newY + "px";
+        };
+
+        document.onmouseup = function () {
+          draggedElement = null;
+          document.onmousemove = null;
+          document.onmouseup = null;
+        };
+
+        e.preventDefault();
+      }
+
+      function startResize(e, img) {
+        resizingElement = img;
+        startX = e.clientX;
+        startY = e.clientY;
+        startWidth = parseInt(img.style.width);
+        startHeight = parseInt(img.style.height);
+
+        document.onmousemove = function (e) {
+          if (!resizingElement) return;
+
+          const newWidth = startWidth + (e.clientX - startX);
+          const newHeight = startHeight + (e.clientY - startY);
+
+          if (newWidth > 50) resizingElement.style.width = newWidth + "px";
+          if (newHeight > 50) resizingElement.style.height = newHeight + "px";
+        };
+
+        document.onmouseup = function () {
+          resizingElement = null;
+          document.onmousemove = null;
+          document.onmouseup = null;
+        };
+
+        e.preventDefault();
+      }
+
+      // Language selection for export
+      function selectExportLanguage(lang) {
+        exportLanguage = lang;
+
+        // Update UI to show selected language
+        document.getElementById("lang-en-option").classList.remove("selected");
+        document.getElementById("lang-id-option").classList.remove("selected");
+        document
+          .getElementById(`lang-${lang}-option`)
+          .classList.add("selected");
+
+        showToast(
+          `Export language set to ${lang === "en" ? "English" : "Indonesia"}`,
+          "info"
+        );
+      }
+
+      // Export Functions
+      async function exportToPDF() {
+        closeExportModal();
+        showProgress("Generating PDF...");
+
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF("l", "mm", "a4");
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+
+        for (let i = 1; i <= totalSlides; i++) {
+          updateProgress((i / totalSlides) * 100);
+
+          if (i > 1) {
+            pdf.addPage();
+          }
+
+          const slide = document.getElementById(`slide${i}`);
+
+          try {
+            // Temporarily hide navigation and indicators for clean export
+            const navigation = slide.querySelector(".navigation");
+            const indicator = slide.querySelector(".slide-indicator");
+            const editControls = slide.querySelector(".edit-controls");
+
+            if (navigation) navigation.style.display = "none";
+            if (indicator) indicator.style.display = "none";
+            if (editControls) editControls.style.display = "none";
+
+            // Temporarily hide non-selected language content
+            const enContent = slide.querySelectorAll(".en-content");
+            const idContent = slide.querySelectorAll(".id-content");
+
+            if (exportLanguage === "en") {
+              idContent.forEach((el) => (el.style.display = "none"));
+            } else {
+              enContent.forEach((el) => (el.style.display = "none"));
+            }
+
+            const canvas = await html2canvas(slide, {
+              scale: 2,
+              useCORS: true,
+              logging: false,
+              backgroundColor: null,
+            });
+
+            // Restore visibility
+            if (navigation) navigation.style.display = "";
+            if (indicator) indicator.style.display = "";
+            if (editControls) editControls.style.display = "";
+
+            // Restore language content visibility
+            enContent.forEach((el) => (el.style.display = ""));
+            idContent.forEach((el) => (el.style.display = ""));
+
+            const imgData = canvas.toDataURL("image/png");
+            const imgWidth = pageWidth - 20; // 10mm margin on each side
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+            // Center the image on the page
+            const xPos = (pageWidth - imgWidth) / 2;
+            const yPos = (pageHeight - imgHeight) / 2;
+
+            pdf.addImage(imgData, "PNG", xPos, yPos, imgWidth, imgHeight);
+          } catch (error) {
+            console.error("Error capturing slide:", error);
+            showToast(`Error capturing slide ${i}: ${error.message}`, "error");
+          }
+        }
+
+        hideProgress();
+        const filename =
+          exportLanguage === "en"
+            ? "Microwave_Radio_Link_Presentation.pdf"
+            : "Presentasi_Radio_Microwave_Link.pdf";
+        pdf.save(filename);
+        showToast("PDF exported successfully", "success");
+      }
+
+      async function exportToPPT() {
+        closeExportModal();
+        showProgress("Generating PowerPoint...");
+
+        const pptx = new PptxGenJS();
+
+        for (let i = 1; i <= totalSlides; i++) {
+          updateProgress((i / totalSlides) * 100);
+
+          const slide = document.getElementById(`slide${i}`);
+          const slideTitle =
+            slide.querySelector(".slide-title")?.textContent || `Slide ${i}`;
+
+          // Determine slide layout based on content
+          let slideLayout = "TITLE_SLIDE";
+          if (i === 1) {
+            slideLayout = "TITLE_SLIDE";
+          } else if (slide.querySelector(".bilingual")) {
+            slideLayout = "TWO_CONTENT";
+          } else if (
+            slide.querySelector(".solution-steps") ||
+            slide.querySelector(".references")
+          ) {
+            slideLayout = "TWO_CONTENT";
+          } else {
+            slideLayout = "TITLE_AND_CONTENT";
+          }
+
+          const pptSlide = pptx.addSlide(slideLayout);
+
+          try {
+            // Temporarily hide navigation and indicators for clean export
+            const navigation = slide.querySelector(".navigation");
+            const indicator = slide.querySelector(".slide-indicator");
+            const editControls = slide.querySelector(".edit-controls");
+
+            if (navigation) navigation.style.display = "none";
+            if (indicator) indicator.style.display = "none";
+            if (editControls) editControls.style.display = "none";
+
+            // Temporarily hide non-selected language content
+            const enContent = slide.querySelectorAll(".en-content");
+            const idContent = slide.querySelectorAll(".id-content");
+
+            if (exportLanguage === "en") {
+              idContent.forEach((el) => (el.style.display = "none"));
+            } else {
+              enContent.forEach((el) => (el.style.display = "none"));
+            }
+
+            const canvas = await html2canvas(slide, {
+              scale: 2,
+              useCORS: true,
+              logging: false,
+              backgroundColor: null,
+            });
+
+            // Restore visibility
+            if (navigation) navigation.style.display = "";
+            if (indicator) indicator.style.display = "";
+            if (editControls) editControls.style.display = "";
+
+            // Restore language content visibility
+            enContent.forEach((el) => (el.style.display = ""));
+            idContent.forEach((el) => (el.style.display = ""));
+
+            const imgData = canvas.toDataURL("image/png");
+
+            // Add image to fill the entire slide
+            pptSlide.addImage({
+              data: imgData,
+              x: 0,
+              y: 0,
+              w: "100%",
+              h: "75%",
+            });
+          } catch (error) {
+            console.error("Error capturing slide:", error);
+            showToast(`Error capturing slide ${i}: ${error.message}`, "error");
+
+            // Fallback: Add text content if image capture fails
+            const title =
+              slide.querySelector(".slide-title")?.textContent || `Slide ${i}`;
+            pptSlide.addText(title, {
+              x: 0.5,
+              y: 0.5,
+              fontSize: 24,
+              bold: true,
+              color: "FFFFFF",
+            });
+
+            const content = slide.querySelector(".slide-content");
+            if (content) {
+              const textElements = content.querySelectorAll("p, li, h3, h4");
+              let yPos = 1.5;
+              textElements.forEach((el) => {
+                if (el.textContent.trim()) {
+                  pptSlide.addText(el.textContent.trim(), {
+                    x: 0.5,
+                    y: yPos,
+                    fontSize: 14,
+                    color: "FFFFFF",
+                  });
+                  yPos += 0.5;
+                }
+              });
+            }
+          }
+        }
+
+        hideProgress();
+        const filename =
+          exportLanguage === "en"
+            ? "Microwave_Radio_Link_Presentation.pptx"
+            : "Presentasi_Radio_Microwave_Link.pptx";
+        pptx.writeFile({ fileName: filename });
+        showToast("PowerPoint exported successfully", "success");
+      }
+
+      // Keyboard navigation
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowRight") nextSlide();
+        if (e.key === "ArrowLeft") prevSlide();
+      });
+
+      // Touch/swipe support for mobile
+      let touchStartX = 0;
+      let touchEndX = 0;
+
+      document.addEventListener("touchstart", function (e) {
+        touchStartX = e.changedTouches[0].screenX;
+      });
+
+      document.addEventListener("touchend", function (e) {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+      });
+
+      function handleSwipe() {
+        if (touchEndX < touchStartX - 50) nextSlide();
+        if (touchEndX > touchStartX + 50) prevSlide();
+      }
+    </script>
+  </body>
+</html>
